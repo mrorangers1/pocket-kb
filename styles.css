@@ -213,3 +213,6 @@ h2.sec{font-size:13px;color:var(--sub);text-transform:uppercase;letter-spacing:1
 .wlbtn:active{transform:scale(.96)}
 .linkchips{margin:2px 0 10px}
 .backbtn{flex:none;width:30px;height:30px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--txt);cursor:pointer;font-size:16px;line-height:1}
+/* ASCII 图/代码块：等宽 + 横向滚动，保持对齐 */
+.sheet-bd pre,.lesson-bd pre{overflow-x:auto;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0;-webkit-overflow-scrolling:touch}
+.sheet-bd pre code,.lesson-bd pre code{display:block;white-space:pre;font-size:12px;line-height:1.55;background:none;border:none;padding:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}

@@ -6,7 +6,7 @@
      数据来自 Obsidian vault 构建产物（app/data/*.json）
      ============================================================ */
 
-  var APP_VERSION = "1.3.0";
+  var APP_VERSION = "1.3.1";
   var STORE_KEY = "pocket_kb_v1";
 
   var FALLBACK_LIBS = [
