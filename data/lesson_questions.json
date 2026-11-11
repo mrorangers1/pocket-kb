@@ -1,0 +1,190 @@
+{
+"version": 1,
+"questions": [
+{
+"options": [
+"AR(3)（即 ARIMA(3",
+"0",
+"0)）",
+"MA(3)",
+"ARMA(3",
+"3)",
+"随机游走"
+],
+"id": "lsn-arima-ordering-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "ARIMA 定阶实战：两把尺子量 p 和 q",
+"stem": "某平稳序列的 PACF 在 lag3 后截尾，ACF 拖尾衰减。应优先试哪个模型？",
+"answer": "A",
+"explain": "PACF p 阶截尾 + ACF 拖尾 → AR(p)。口诀\"AR 看 P 截尾、MA 看 A 截尾\"。",
+"source": "自相关ACF与偏自相关PACF · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"Q 提问、K 被检索的标签、V 被拿走的内容",
+"Q 内容、K 提问、V 标签",
+"三者完全等价可互换",
+"V 决定检索、Q 提供内容"
+],
+"id": "lsn-attention-qkv-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "注意力机制三步走",
+"stem": "自注意力中，Q、K、V 三个矩阵的作用是？",
+"answer": "A",
+"explain": "Q=查询意图，K=索引标签，V=实际内容；三者角色不同，混了就无法理解注意力在做什么。",
+"source": "注意力机制 · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"TDengine（AGPL）",
+"Grafana（AGPL）",
+"Appsmith（AGPL）",
+"Apache IoTDB（Apache-2.0）",
+"Refine（MIT）"
+],
+"id": "lsn-industrial-selection-map-1",
+"type": "multi",
+"difficulty": 2,
+"library": "soft",
+"topic": "工业软件选型地图：一图看懂怎么选",
+"stem": "下列开源项目因 License 原因\"内嵌闭源商用需授权\"的有？",
+"answer": "A,B,C",
+"explain": "Apache-2.0/MIT 可自由商用；AGPL 网络交互也触发开源义务，内嵌需商业授权。License 审查永远先于功能对比。",
+"source": "工业软件选型 · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"对应的旧记忆 C_{t-1} 成分被清除",
+"模型停止工作",
+"输出 h_t 归零",
+"学习率过大"
+],
+"id": "lsn-lstm-gates-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "LSTM 三门：会记事的循环网络",
+"stem": "LSTM 中遗忘门 f_t 的输出接近 0 意味着？",
+"answer": "A",
+"explain": "遗忘门逐元素作用于旧 C：f→0 撕掉该维度的旧记忆，f→1 原样保留。这就是\"选择性遗忘\"的机制本体。",
+"source": "LSTM与GRU · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"中长期合约从锁电量转向风险管理工具",
+"S4 出清反推的同质化风险来自多数主体用同类方法",
+"S5 RL 在合规审计场景受限于可解释性",
+"六大策略互相排斥只能选一种",
+"一体化引擎强调多层次/可解释/能进化"
+],
+"id": "lsn-pricing-six-strategies-1",
+"type": "multi",
+"difficulty": 2,
+"library": "power",
+"topic": "报价策略六类：从锁风险到智能进化",
+"stem": "关于报价策略演进与组合，正确的有？",
+"answer": "A,B,C,E",
+"explain": "D 错：实战是组合（S1+S2 锁底 + S4/S6 现货 + S5 渐进增强）。记住演进三阶段与\"组合而非单选\"。",
+"source": "电力市场报价策略深度研究 · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"被打到很低甚至负值",
+"必然上涨",
+"与报价无关由行政定价",
+"保持不变"
+],
+"id": "lsn-spot-clearing-1",
+"type": "choice",
+"difficulty": 2,
+"library": "power",
+"topic": "电力现货市场是怎么出清的",
+"stem": "某时段风光大发、报价接近 0 且供给充足，此时现货出清价通常会？",
+"answer": "A",
+"explain": "低边际成本机组占据 merit order 最左侧，切点价格被拉低；供给过剩时甚至出负价（用电倒拿钱）。这正是山西、山东午间常见的价格形态。",
+"source": "现货市场出清 · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"此时充电可同时获得「免电费 + 补贴」，是最佳充电窗口",
+"必须停机避免亏损",
+"数据异常应删除",
+"只能放电不能充电"
+],
+"id": "lsn-storage-arbitrage-1",
+"type": "choice",
+"difficulty": 2,
+"library": "sghc",
+"topic": "储能峰谷套利，一页讲透",
+"stem": "某日出清曲线显示凌晨 1–5 时电价为 −40 元/MWh。对储能来说这意味着？",
+"answer": "A",
+"explain": "负电价 = 用电倒拿钱；储能充电边际成本为负，叠加放电高价，单笔价差最大化。处理数据时保留负值是套利测算的关键细节。",
+"source": "储能套利空间计算逻辑 · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"偏差是自动触发的，知识只支持事后识别——必须靠清单/复核/冷却期等结构兜底",
+"因为清单太贵",
+"偏差只影响新手",
+"AI 可以完全替代人"
+],
+"id": "lsn-system12-trader-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "双系统与交易员：你的大脑怎么决策",
+"stem": "为什么\"知道偏差清单\"不足以避免交易中的认知偏差？",
+"answer": "A",
+"explain": "出厂设置改不掉，只能加\"外置护栏\"。这也是 Jev 类 System One 模型要数据 debias 的原因。",
+"source": "System1与System2/启发式与偏差 · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"残差连接（梯度高速回传）",
+"Pre-LN（先归一化）",
+"多头注意力（多子空间并行）",
+"去掉所有激活函数"
+],
+"id": "lsn-transformer-block-1",
+"type": "multi",
+"difficulty": 2,
+"library": "model",
+"topic": "Transformer 块：一切 LLM 的积木",
+"stem": "深层 Transformer 训练稳定的关键因素包括？",
+"answer": "A,B,C",
+"explain": "残差防梯度消失、Pre-LN 防数值爆炸、多头提升表达能力；激活函数是 FFN 的非线性来源，不能去。",
+"source": "Transformer块 · 精讲课中测",
+"auto": false
+},
+{
+"options": [
+"容量电价补贴（165 元/kW·年体系）",
+"峰谷价差套利",
+"供电收入",
+"供热收入"
+],
+"id": "lsn-vpp-six-revenues-1",
+"type": "choice",
+"difficulty": 2,
+"library": "sghc",
+"topic": "虚拟电厂六本账，一本一本算清",
+"stem": "虚拟电厂收益中，属于\"政策托底、最稳定\"的一本是？",
+"answer": "A",
+"explain": "容量补贴按铭牌容量×标准×考核系数发放，与现货价格脱钩；②③⑥都随市场波动。判断项目基本盘先看容量补贴。",
+"source": "虚拟电厂经济性模型 · 精讲课中测",
+"auto": false
+}
+]
+}

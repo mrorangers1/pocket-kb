@@ -1,0 +1,776 @@
+{
+"version": 1,
+"lessons": [
+{
+"id": "arima-ordering",
+"title": "ARIMA 定阶实战：两把尺子量 p 和 q",
+"subtitle": "ACF/PACF 判读 + AIC/BIC 搜索 · 建模精读 ⑦",
+"library": "model",
+"minutes": 7,
+"hue": 330,
+"intro": "<blockquote>一句话：<strong>AR(p) 的记忆只有 p 天（PACF 在 p 阶后砍断），MA(q) 是 q 天冲击的残留（ACF 在 q 阶后清零）；先拿 ACF/PACF 量出范围，再让 AIC/BIC 选最优。</strong></blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、两把尺子分别量什么</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li><strong>ACF</strong>（自相关）：序列与\"自己过去\"的<strong>总体</strong>相关——我跟所有前任的关系总和；</li><li><strong>PACF</strong>（偏自相关）：剔除中间项后的<strong>纯粹直接关系</strong>——隔空还剩多少真感情。</li></ul>\n<p>$$\\text{AR}(p):\\ \\text{PACF}\\ p\\text{ 阶截尾},\\ \\text{ACF 拖尾};\\qquad \\text{MA}(q):\\ \\text{ACF}\\ q\\text{ 阶截尾},\\ \\text{PACF 拖尾}$$</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、判读动图</h3>"
+},
+{
+"type": "anim",
+"name": "acfpacf.svg",
+"svg": "<svg viewBox=\"0 0 360 240\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\">\n<style>\n.lbl{fill:#8fa1c0;font-size:9px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:10px;font-weight:700;font-family:-apple-system,sans-serif}\n.ax{stroke:#5b6b85;stroke-width:1.1}\n.acf{fill:#38c6e0}.pacf{fill:#f5a524}\n.cut{animation:cut 5s infinite}\n@keyframes cut{0%,40%{opacity:0;transform:translateX(0)}50%,92%{opacity:1;transform:translateX(0)}100%{opacity:0}}\n.cap{animation:cap 5s infinite}\n@keyframes cap{0%,50%{opacity:0}58%,92%{opacity:1}100%{opacity:0}}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">判读口诀：AR 看 P（截尾），MA 看 A（截尾）</text>\n<!-- ACF 图 -->\n<text x=\"30\" y=\"34\" class=\"lblb\">ACF（拖尾示范）</text>\n<line x1=\"30\" y1=\"86\" x2=\"180\" y2=\"86\" class=\"ax\"/>\n<g class=\"acf\"><rect x=\"40\" y=\"60\" width=\"12\" height=\"26\"/><rect x=\"58\" y=\"68\" width=\"12\" height=\"18\" opacity=\".85\"/><rect x=\"76\" y=\"74\" width=\"12\" height=\"12\" opacity=\".7\"/><rect x=\"94\" y=\"79\" width=\"12\" height=\"7\" opacity=\".55\"/><rect x=\"112\" y=\"82\" width=\"12\" height=\"4\" opacity=\".4\"/><rect x=\"130\" y=\"84\" width=\"12\" height=\"2\" opacity=\".3\"/></g>\n<text x=\"40\" y=\"100\" class=\"lbl\">lag1</text><text x=\"112\" y=\"100\" class=\"lbl\">lag5</text>\n<!-- PACF 图 -->\n<text x=\"30\" y=\"126\" class=\"lblb\">PACF（p=2 截尾示范）</text>\n<line x1=\"30\" y1=\"178\" x2=\"180\" y2=\"178\" class=\"ax\"/>\n<g class=\"pacf\"><rect x=\"40\" y=\"150\" width=\"12\" height=\"28\"/><rect x=\"58\" y=\"156\" width=\"12\" height=\"22\"/></g>\n<g class=\"pacf\" opacity=\".18\"><rect x=\"76\" y=\"177\" width=\"12\" height=\"1\"/><rect x=\"94\" y=\"177\" width=\"12\" height=\"1\"/><rect x=\"112\" y=\"177\" width=\"12\" height=\"1\"/></g>\n<line x1=\"74\" y1=\"140\" x2=\"74\" y2=\"184\" class=\"ax\" stroke=\"#f87171\" stroke-width=\"1.8\" stroke-dasharray=\"4 3\"/>\n<g class=\"cut\"><text x=\"80\" y=\"138\" class=\"lblb\" fill=\"#f87171\">p 阶后\"砍断\"</text></g>\n<text x=\"40\" y=\"192\" class=\"lbl\">lag1</text><text x=\"76\" y=\"192\" class=\"lbl\">lag3</text>\n<!-- 右侧判定表 -->\n<g class=\"cap\">\n<rect x=\"196\" y=\"40\" width=\"150\" height=\"150\" rx=\"10\" fill=\"#131f38\" stroke=\"#3d558a\"/>\n<text x=\"206\" y=\"60\" class=\"lblb\">判定：AR(2)</text>\n<text x=\"206\" y=\"80\" class=\"lbl\">PACF 2 阶截尾 → p=2</text>\n<text x=\"206\" y=\"98\" class=\"lbl\">ACF 拖尾 → 非 MA</text>\n<text x=\"206\" y=\"120\" class=\"lblb\" fill=\"#34d399\">先试 ARIMA(2,d,0)</text>\n<text x=\"206\" y=\"142\" class=\"lbl\">再用 AIC/BIC 小范围搜索</text>\n<text x=\"206\" y=\"160\" class=\"lbl\">残差跑 Ljung–Box 收尾</text>\n</g>\n<text x=\"30\" y=\"224\" class=\"lbl\">随机游走的 ACF 会\"极缓线性衰减\"——遇到它先差分，别急着定阶。</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<p>看动画：上图 ACF 指数衰减（拖尾）→ 不是纯 MA；下图 PACF 在 lag2 之后砍断 → p=2。结论：先试 ARIMA(2,d,0)。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、从\"量范围\"到\"定最终阶\"</h3>"
+},
+{
+"type": "html",
+"html": "<ol><li>平稳性检查 → 非平稳先差分定 d；</li><li>ACF/PACF 给出 (p,q) 的<strong>候选范围</strong>（不是最终答案）；</li><li>在范围内跑 <strong>AIC/BIC</strong> 网格搜索（BIC 惩罚更重、更不易过拟合）；</li><li>残差 <strong>Ljung–Box</strong> 检验：p≥0.05 才说明结构吃干净了。</li></ol>\n<blockquote><strong>两个坑</strong>：①序列没平稳就看 ACF——随机游走会给出\"永远显著\"的假象；②样本少时把噪声当显著——必须过 Bartlett 置信带（±1.96/√n）。</blockquote>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"AR(3)（即 ARIMA(3",
+"0",
+"0)）",
+"MA(3)",
+"ARMA(3",
+"3)",
+"随机游走"
+],
+"id": "lsn-arima-ordering-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "ARIMA 定阶实战：两把尺子量 p 和 q",
+"stem": "某平稳序列的 PACF 在 lag3 后截尾，ACF 拖尾衰减。应优先试哪个模型？",
+"answer": "A",
+"explain": "PACF p 阶截尾 + ACF 拖尾 → AR(p)。口诀\"AR 看 P 截尾、MA 看 A 截尾\"。",
+"source": "自相关ACF与偏自相关PACF · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>判读口诀 + AIC/BIC + Ljung–Box = 完整定阶流水线。</li><li>auto_arima 可自动搜索（Hyndman &amp; Khandakar 2008），但人得懂它在搜什么。</li><li>下一步：读概念卡《ARIMA族》《自相关ACF与偏自相关PACF》；刷题库「ARIMA」一组。</li></ul>"
+}
+]
+},
+{
+"id": "attention-qkv",
+"title": "注意力机制三步走",
+"subtitle": "Transformer 的心脏 · 8 分钟搞懂 QKV 到底在干嘛",
+"library": "model",
+"minutes": 8,
+"hue": 195,
+"intro": "<blockquote>一句话：<strong>每个词发一个「问题」，再拿自己的「标签」去回答别人的问题，最后按答案的分数抄别人的「内容」</strong>。这就是 Attention。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、RNN 的痛点：隔得远就忘了</h3>"
+},
+{
+"type": "html",
+"html": "<p>LSTM/GRU 靠门控记事，但信息要一个时间步一个时间步往后传——<strong>第 1 个字和第 96 个字之间隔着 95 次传递，该衰减还是衰减</strong>。训练时梯度还要原路返回，梯度消失就是这么来的。</p>\n<p>注意力机制的 radical 之处：<strong>任意两个位置直接通信</strong>，跳过了「挨个传话」。序列里谁和谁相关，由数据自己学。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、第一步：QKV 三个投影</h3>"
+},
+{
+"type": "html",
+"html": "<p>每个输入向量 x 乘三个可学习矩阵，得到三个分身：</p>\n<p>$$Q = XW_Q,\\quad K = XW_K,\\quad V = XW_V$$</p>\n<ul><li><strong>Q（Query）</strong>：我想找什么——「我想知道谁和我有关」</li><li><strong>K（Key）</strong>：我是什么——「我的标签，方便别人检索我」</li><li><strong>V（Value）</strong>：我有什么内容——「检索到我之后，实际拿走的信息」</li></ul>\n<p>图书馆类比：<strong>Q 是你想问的问题，K 是书脊上的索引标签，V 是书的内容</strong>。三步缺一不可：没有 K 找不到书，没有 V 拿到的是空壳。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、第二步：算匹配分，并除以 √d_k</h3>"
+},
+{
+"type": "html",
+"html": "<p>用 Q 和每个 K 做点积，得到匹配分数，再<strong>除以 √d_k</strong>（d_k 是向量的维度）：</p>\n<p>$$\\text{scores} = \\frac{QK^{\\top}}{\\sqrt{d_k}}$$</p>\n<p>为什么要除？<strong>点积的方差随维度 d_k 线性增长</strong>。维度一大，分数全变成几千几万的极端值，softmax 会直接「全押在一个位置上」——梯度趋近于 0，训练直接死掉。除以 √d_k 把分数拉回温和区间，softmax 才有区分度。这是面试和自查的高频考点。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、第三步：softmax 归一化，加权抄 V</h3>"
+},
+{
+"type": "html",
+"html": "<p>$$\\text{Attention}(Q,K,V)=\\text{softmax}\\Big(\\frac{QK^{\\top}}{\\sqrt{d_k}}\\Big)V$$</p>\n<p>softmax 把每个位置的匹配分变成「借阅权重」（加起来等于 1），输出就是所有位置的 V 的加权和。<strong>softmax 不是装饰：它保证信息是按比例混合，而不是谁嗓门大谁通吃。</strong></p>"
+},
+{
+"type": "anim",
+"name": "qkv.svg",
+"svg": "<svg viewBox=\"0 0 360 250\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\" role=\"img\" aria-label=\"注意力QKV匹配动画\">\n<style>\n.bx{rx:7}.tok{fill:#223052;stroke:#3d558a;stroke-width:1.2}\n.t{fill:#e7eefc;font-size:10px;font-weight:700;font-family:-apple-system,sans-serif;text-anchor:middle}\n.s{fill:#8fa1c0;font-size:8.5px;font-family:-apple-system,sans-serif;text-anchor:middle}\n.ql{stroke:#f5a524;stroke-width:1.6;fill:none}.kl{stroke:#38c6e0;stroke-width:1.6;fill:none}.vl{stroke:#34d399;stroke-width:1.6;fill:none}\n.qdot{fill:#f5a524}.kdot{fill:#38c6e0}.vdot{fill:#34d399}\n.flow{stroke-dasharray:4 5;animation:dash 1.6s linear infinite}\n@keyframes dash{to{stroke-dashoffset:-18}}\n.pulse{animation:pl 4.5s infinite}\n@keyframes pl{0%,18%{opacity:1}26%,100%{opacity:.28}}\n.w1{animation:w1 4.5s infinite}.w2{animation:w2 4.5s infinite}.w3{animation:w3 4.5s infinite}\n@keyframes w1{0%,20%{opacity:.15}30%,90%{opacity:.9}100%{opacity:.15}}\n@keyframes w2{0%,34%{opacity:.15}44%,90%{opacity:.55}100%{opacity:.15}}\n@keyframes w3{0%,48%{opacity:.15}58%,90%{opacity:.75}100%{opacity:.15}}\n.outmix{animation:om 4.5s infinite}\n@keyframes om{0%,62%{opacity:.15}74%,95%{opacity:1}100%{opacity:.15}}\n</style>\n<text x=\"10\" y=\"14\" class=\"t\" style=\"text-anchor:start\">三步：Q 提问 → K 对标签 → 按权重抄 V</text>\n<!-- 三个词 -->\n<g class=\"pulse\" style=\"animation-delay:0s\">\n<rect x=\"18\" y=\"30\" width=\"56\" height=\"26\" class=\"bx tok\"/><text x=\"46\" y=\"47\" class=\"t\">电价</text><text x=\"46\" y=\"66\" class=\"s\">x1</text></g>\n<g class=\"pulse\" style=\"animation-delay:.15s\">\n<rect x=\"18\" y=\"80\" width=\"56\" height=\"26\" class=\"bx tok\"/><text x=\"46\" y=\"97\" class=\"t\">上涨</text><text x=\"46\" y=\"116\" class=\"s\">x2</text></g>\n<g class=\"pulse\" style=\"animation-delay:.3s\">\n<rect x=\"18\" y=\"130\" width=\"56\" height=\"26\" class=\"bx tok\"/><text x=\"46\" y=\"147\" class=\"t\">因为</text><text x=\"46\" y=\"166\" class=\"s\">x3</text></g>\n<!-- Q 出发（以 x2 的 Q 为例） -->\n<path d=\"M74 93 C 120 93, 130 40, 176 40\" class=\"ql flow\"/>\n<circle cx=\"120\" cy=\"66\" r=\"3\" class=\"qdot\"><animateMotion dur=\"1.8s\" repeatCount=\"indefinite\" path=\"M74 93 C 120 93, 130 40, 176 40\"/></circle>\n<text x=\"120\" y=\"52\" class=\"s\" fill=\"#f5a524\">Q = 我想找「谁导致我涨」</text>\n<!-- K 标签 -->\n<rect x=\"176\" y=\"28\" width=\"150\" height=\"24\" class=\"bx tok\" fill=\"#12333d\"/><text x=\"251\" y=\"44\" class=\"t\" fill=\"#bfeef7\">每个位置的 K = 索引标签</text>\n<!-- V 内容 -->\n<rect x=\"176\" y=\"120\" width=\"150\" height=\"24\" class=\"bx tok\" fill=\"#123528\"/><text x=\"251\" y=\"136\" class=\"t\" fill=\"#c9f5df\">每个位置的 V = 内容本体</text>\n<path d=\"M176 40 L 200 120\" class=\"kl flow\"/><path d=\"M251 52 L 251 120\" class=\"vl flow\"/><path d=\"M326 40 L 310 120\" class=\"kl flow\"/>\n<!-- 匹配分热力条 -->\n<text x=\"180\" y=\"168\" class=\"s\">匹配分 Q·K（除以 √d 后 softmax）：</text>\n<rect x=\"180\" y=\"174\" width=\"50\" height=\"12\" class=\"bx\" fill=\"#f5a524\" opacity=\".9\" style=\"animation:w1 4.5s infinite\"/>\n<rect x=\"236\" y=\"174\" width=\"34\" height=\"12\" class=\"bx\" fill=\"#f5a524\" opacity=\".4\" style=\"animation:w2 4.5s infinite\"/>\n<rect x=\"276\" y=\"174\" width=\"44\" height=\"12\" class=\"bx\" fill=\"#f5a524\" opacity=\".7\" style=\"animation:w3 4.5s infinite\"/>\n<text x=\"180\" y=\"200\" class=\"s\">x1↔x2 强相关</text><text x=\"238\" y=\"200\" class=\"s\">x2 自身弱</text><text x=\"278\" y=\"200\" class=\"s\">x3↔x2 较强</text>\n<!-- 输出 -->\n<g class=\"outmix\">\n<path d=\"M326 180 C 340 180, 345 220, 330 224\" class=\"vl flow\"/>\n<rect x=\"230\" y=\"216\" width=\"120\" height=\"24\" class=\"bx tok\" fill=\"#1a2a4a\"/><text x=\"290\" y=\"232\" class=\"t\">输出 = Σ 权重×V</text></g>\n<text x=\"14\" y=\"240\" class=\"s\">「上涨」的新表示 = 多抄了一点 x1 和 x3 的内容</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<p>看动画：以「上涨」为例——它的 Q 去向每个位置的 K 求匹配，得到权重后按权重混合所有位置的 V，得到「上涨」的新表示。这个新表示已经「看过了全句」。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、两个高频误区</h3>"
+},
+{
+"type": "html",
+"html": "<blockquote><strong>误区 1：注意力权重 = 解释性。</strong> 错。权重高不代表因果贡献大，大量研究证实二者相关性弱。权重可以当线索，不能当证据。  <strong>误区 2：注意力很便宜。</strong> vanilla 自注意力是 O(n²)：96×365 个点根本算不动，要靠 Patch（PatchTST）或稀疏注意力（Informer）这类技巧。</blockquote>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">六、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"Q 提问、K 被检索的标签、V 被拿走的内容",
+"Q 内容、K 提问、V 标签",
+"三者完全等价可互换",
+"V 决定检索、Q 提供内容"
+],
+"id": "lsn-attention-qkv-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "注意力机制三步走",
+"stem": "自注意力中，Q、K、V 三个矩阵的作用是？",
+"answer": "A",
+"explain": "Q=查询意图，K=索引标签，V=实际内容；三者角色不同，混了就无法理解注意力在做什么。",
+"source": "注意力机制 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">七、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>注意力 = <strong>直接通信 + 按相关性混合信息</strong>，取代循环结构。</li><li>缩放 √d_k 是 softmax 稳定工作的前提。</li><li>下一步：读概念卡《注意力机制》记公式细节；再去「学习」页看《Transformer块》，看多头注意力和残差怎么拼成完整方块。</li></ul>"
+}
+]
+},
+{
+"id": "industrial-selection-map",
+"title": "工业软件选型地图：一图看懂怎么选",
+"subtitle": "六大场景 × 三否决项 · 工业软件精读 ⑧",
+"library": "soft",
+"minutes": 9,
+"hue": 260,
+"intro": "<blockquote>一句话：<strong>先定场景，再查 License（一票否决），最后看项目活性（停更即弃）</strong>。这张图来自知识库 40+ 个开源项目的真实调研。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、选型地图</h3>"
+},
+{
+"type": "figure",
+"name": "selection-map.svg",
+"svg": "<svg viewBox=\"0 0 360 250\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\">\n<style>\n.lbl{fill:#8fa1c0;font-size:8.6px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:9.6px;font-weight:700;font-family:-apple-system,sans-serif}\n.q{fill:#131f38;stroke:#3d558a;stroke-width:1.3}\n.rec{stroke-width:1.6;fill:rgba(45,212,191,.06)}\n.ok{stroke:#34d399}.warn{stroke:#f5a524}.bad{stroke:#f87171}\n.e{stroke:#3d558a;stroke-width:1.1;fill:none}\n.star{fill:#f5d76e}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">工业软件选型地图：先看场景，再看 License，最后看活性</text>\n<rect x=\"120\" y=\"24\" width=\"120\" height=\"24\" class=\"q\" rx=\"8\"/><text x=\"180\" y=\"40\" class=\"lblb\" text-anchor=\"middle\">你的场景是什么？</text>\n<!-- 六分支 -->\n<path d=\"M150 48 L 84 76\" class=\"e\"/><path d=\"M180 48 L 180 76\" class=\"e\"/><path d=\"M210 48 L 276 76\" class=\"e\"/>\n<rect x=\"36\" y=\"78\" width=\"98\" height=\"26\" class=\"q\" rx=\"8\"/><text x=\"85\" y=\"94\" class=\"lblb\" text-anchor=\"middle\">设备时序数据存取</text>\n<rect x=\"148\" y=\"78\" width=\"66\" height=\"26\" class=\"q\" rx=\"8\"/><text x=\"181\" y=\"94\" class=\"lblb\" text-anchor=\"middle\">设备接入</text>\n<rect x=\"228\" y=\"78\" width=\"98\" height=\"26\" class=\"q\" rx=\"8\"/><text x=\"277\" y=\"94\" class=\"lblb\" text-anchor=\"middle\">实时计算/OLAP</text>\n<!-- 推荐 -->\n<path d=\"M85 104 L 85 122\" class=\"e\"/><path d=\"M181 104 L 181 122\" class=\"e\"/><path d=\"M277 104 L 277 122\" class=\"e\"/>\n<rect x=\"16\" y=\"124\" width=\"140\" height=\"30\" class=\"rec ok\" rx=\"8\"/><text x=\"24\" y=\"137\" class=\"lblb\">信创首选 IoTDB / TDengine</text><text x=\"24\" y=\"149\" class=\"lbl\">Apache-2.0 ✓ ｜ AGPL 需授权 ⚠</text>\n<rect x=\"164\" y=\"124\" width=\"78\" height=\"30\" class=\"rec ok\" rx=\"8\"/><text x=\"203\" y=\"137\" class=\"lblb\" text-anchor=\"middle\">EMQX</text><text x=\"203\" y=\"149\" class=\"lbl\" text-anchor=\"middle\">MQTT 事实标准</text>\n<rect x=\"250\" y=\"124\" width=\"100\" height=\"30\" class=\"rec ok\" rx=\"8\"/><text x=\"300\" y=\"137\" class=\"lblb\" text-anchor=\"middle\">Flink / Doris</text><text x=\"300\" y=\"149\" class=\"lbl\" text-anchor=\"middle\">流计算 / OLAP</text>\n<!-- 下排三场景 -->\n<path d=\"M120 48 L 60 170\" class=\"e\" opacity=\".6\"/><path d=\"M180 48 L 180 170\" class=\"e\" opacity=\".6\"/><path d=\"M240 48 L 300 170\" class=\"e\" opacity=\".6\"/>\n<rect x=\"14\" y=\"172\" width=\"100\" height=\"24\" class=\"q\" rx=\"8\"/><text x=\"64\" y=\"188\" class=\"lblb\" text-anchor=\"middle\">组态画面/Web SCADA</text>\n<rect x=\"130\" y=\"172\" width=\"100\" height=\"24\" class=\"q\" rx=\"8\"/><text x=\"180\" y=\"188\" class=\"lblb\" text-anchor=\"middle\">协议适配开发</text>\n<rect x=\"246\" y=\"172\" width=\"104\" height=\"24\" class=\"q\" rx=\"8\"/><text x=\"298\" y=\"188\" class=\"lblb\" text-anchor=\"middle\">低代码前端</text>\n<rect x=\"14\" y=\"204\" width=\"100\" height=\"26\" class=\"rec ok\" rx=\"8\"/><text x=\"64\" y=\"215\" class=\"lblb\" text-anchor=\"middle\">FUXA <tspan class=\"star\">★</tspan></text><text x=\"64\" y=\"226\" class=\"lbl\" text-anchor=\"middle\">MIT 唯一活跃</text>\n<rect x=\"130\" y=\"204\" width=\"100\" height=\"26\" class=\"rec warn\" rx=\"8\"/><text x=\"180\" y=\"215\" class=\"lblb\" text-anchor=\"middle\">open62541/Milo</text><text x=\"180\" y=\"226\" class=\"lbl\" text-anchor=\"middle\">61850 库 GPL 慎用</text>\n<rect x=\"246\" y=\"204\" width=\"104\" height=\"26\" class=\"rec ok\" rx=\"8\"/><text x=\"298\" y=\"215\" class=\"lblb\" text-anchor=\"middle\">Refine <tspan class=\"star\">★</tspan></text><text x=\"298\" y=\"226\" class=\"lbl\" text-anchor=\"middle\">MIT 元框架</text>\n<text x=\"14\" y=\"246\" class=\"lbl\">否决项：项目停更（OpenSCADA 类）、GPL 强传染进闭源产品、License 待确认进核心链路。</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、三否决项（比功能更重要）</h3>"
+},
+{
+"type": "html",
+"html": "<ol><li><strong>License 红线</strong>：AGPL（TDengine/Grafana/Appsmith）内嵌闭源产品需授权；GPL（libiec61850）强传染；LGPL 动态链接可商用。</li><li><strong>活性红线</strong>：停更/失效直接否决——OpenSCADA（停 9 年）、ScadaBR（原仓已删）就是前车之鉴。</li><li><strong>协议待确认不进核心链路</strong>：NOASSERTION/待确认的只能进外围工具链。</li></ol>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、两条最有价值的决策</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li><strong>信创时序库</strong>：IoTDB（Apache-2.0，可闭源）vs TDengine（AGPL，技术强需授权）——商业产品内嵌选 IoTDB，自建服务可用 TDengine。</li><li><strong>低代码前端</strong>：Refine（MIT 元框架，白标无风险，首选）＞ Directus（数据中台强）＞ Appsmith/ToolJet（AGPL，AI 能力强但协议弱）。</li></ul>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"TDengine（AGPL）",
+"Grafana（AGPL）",
+"Appsmith（AGPL）",
+"Apache IoTDB（Apache-2.0）",
+"Refine（MIT）"
+],
+"id": "lsn-industrial-selection-map-1",
+"type": "multi",
+"difficulty": 2,
+"library": "soft",
+"topic": "工业软件选型地图：一图看懂怎么选",
+"stem": "下列开源项目因 License 原因\"内嵌闭源商用需授权\"的有？",
+"answer": "A,B,C",
+"explain": "Apache-2.0/MIT 可自由商用；AGPL 网络交互也触发开源义务，内嵌需商业授权。License 审查永远先于功能对比。",
+"source": "工业软件选型 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>选型三步：<strong>场景 → License → 活性</strong>；否决项前置。</li><li>选型结论都有出处：知识库每张卡片 = GitHub API 真实抓取（stars/最后提交/协议）。</li><li>下一步：读概念卡《21-时序数据库·MOC》《40-工业协议栈·MOC》；刷题库「时序数据库/协议栈」两组。</li></ul>"
+}
+]
+},
+{
+"id": "lstm-gates",
+"title": "LSTM 三门：会记事的循环网络",
+"subtitle": "遗忘/输入/输出三个门怎么分工 · 建模精读 ④",
+"library": "model",
+"minutes": 8,
+"hue": 265,
+"intro": "<blockquote>一句话：<strong>C_t 是长期笔记本，h_t 是手头工作记忆；三个门决定撕哪页旧笔记、抄进哪条新事、现在掏出哪页用。</strong> 这节把 LSTM 的门控机制讲成\"一条传送带 + 三道闸门\"。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、RNN 的短板：路太远就忘了</h3>"
+},
+{
+"type": "html",
+"html": "<p>普通 RNN：$h_t = \\tanh(W_h h_{t-1} + W_x x_t)$。信息沿时间步<strong>串行传递</strong>，第 1 个字到第 96 个字要过 95 关——<strong>梯度连乘导致远处的信号衰减到 0</strong>（梯度消失），也导致训练时反向传播的梯度同样传不回去。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、细胞状态：给信息修一条高速公路</h3>"
+},
+{
+"type": "html",
+"html": "<p>LSTM 的核心发明是<strong>细胞状态 C</strong>：一条贯穿全部时间步、几乎不被\"搅动\"的传送带，梯度能沿着它原路返回。门控不是让信息消失，而是<strong>控制读写比例</strong>。</p>\n<p>$$C_t = f_t \\odot C_{t-1} + i_t \\odot \\tilde{C}_t,\\qquad h_t = o_t \\odot \\tanh(C_t)$$</p>\n<ul><li>$f_t$（遗忘门）：<strong>旧记忆保留多少</strong>——σ 输出 0~1，逐元素乘在旧 C 上；</li><li>$i_t$（输入门）：<strong>新信息写入多少</strong>——配合候选 $\\tilde{C}_t=\\tanh(\\cdot)$；</li><li>$o_t$（输出门）：<strong>现在对外展示多少</strong>——决定 h_t 掏哪页。</li></ul>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、三门流水线（动图）</h3>"
+},
+{
+"type": "anim",
+"name": "gates.svg",
+"svg": "<svg viewBox=\"0 0 360 230\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\">\n<style>\n.lbl{fill:#8fa1c0;font-size:9px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:10px;font-weight:700;font-family:-apple-system,sans-serif}\n.belt{stroke:#3d558a;stroke-width:1.4;fill:#131f38}\n.cell{stroke:#2dd4bf;stroke-width:1.6;fill:rgba(45,212,191,.07)}\n.grain{fill:#2dd4bf}\n.ng{fill:#f87171}.pg{fill:#34d399}.bg{fill:#7aa2ff}\n.gv{stroke-width:2.4;fill:none}\n.drop{animation:drop 5.5s infinite}\n@keyframes drop{0%,18%{opacity:0;transform:translateY(0)}22%,40%{opacity:1;transform:translateY(16px)}48%,100%{opacity:0;transform:translateY(24px)}}\n.in2{animation:in2 5.5s infinite}\n@keyframes in2{0%,34%{opacity:0}40%,95%{opacity:1}100%{opacity:0}}\n.out{animation:out 5.5s infinite}\n@keyframes out{0%,58%{opacity:0}64%,95%{opacity:1}100%{opacity:0}}\n.lt1{animation:lt1 5.5s infinite}.lt2{animation:lt2 5.5s infinite}.lt3{animation:lt3 5.5s infinite}\n@keyframes lt1{0%,12%{opacity:.25}20%,100%{opacity:1}}\n@keyframes lt2{0%,30%{opacity:.25}38%,100%{opacity:1}}\n@keyframes lt3{0%,52%{opacity:.25}60%,100%{opacity:1}}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">细胞状态传送带：旧记忆 C 从左往右流，三道门各管一段</text>\n<rect x=\"24\" y=\"86\" width=\"312\" height=\"40\" class=\"cell\" rx=\"8\"/>\n<text x=\"30\" y=\"76\" class=\"lbl\">C（长期笔记本）：C_t = f_t⊙C_{t-1} + i_t⊙C̃_t</text>\n<g><rect x=\"42\" y=\"96\" width=\"10\" height=\"10\" class=\"grain\" rx=\"2\"/><rect x=\"62\" y=\"98\" width=\"10\" height=\"10\" class=\"grain\" rx=\"2\" opacity=\".7\"/><rect x=\"84\" y=\"95\" width=\"10\" height=\"10\" class=\"grain\" rx=\"2\" opacity=\".85\"/><rect x=\"108\" y=\"99\" width=\"10\" height=\"10\" class=\"grain\" rx=\"2\" opacity=\".6\"/></g>\n<!-- 遗忘门 -->\n<g class=\"lt1\"><line x1=\"140\" y1=\"70\" x2=\"140\" y2=\"142\" class=\"gv\" stroke=\"#f87171\"/><text x=\"118\" y=\"62\" class=\"lblb\" fill=\"#f87171\">① 遗忘门 f</text><text x=\"112\" y=\"156\" class=\"lbl\">σ→0 撕掉旧页</text></g>\n<g class=\"drop\"><rect x=\"128\" y=\"126\" width=\"10\" height=\"10\" class=\"ng\" rx=\"2\"/><rect x=\"146\" y=\"124\" width=\"10\" height=\"10\" class=\"ng\" rx=\"2\"/></g>\n<!-- 输入门 -->\n<g class=\"lt2\"><line x1=\"212\" y1=\"70\" x2=\"212\" y2=\"142\" class=\"gv\" stroke=\"#34d399\"/><text x=\"190\" y=\"62\" class=\"lblb\" fill=\"#34d399\">② 输入门 i</text><text x=\"184\" y=\"156\" class=\"lbl\">σ 决定抄进几条</text></g>\n<g class=\"in2\"><rect x=\"200\" y=\"96\" width=\"10\" height=\"10\" class=\"pg\" rx=\"2\"/><rect x=\"218\" y=\"98\" width=\"10\" height=\"10\" class=\"pg\" rx=\"2\" opacity=\".8\"/></g>\n<path d=\"M206 168 L 206 128\" stroke=\"#34d399\" stroke-width=\"1.6\" class=\"out\" style=\"animation:in2 5.5s infinite\"/>\n<text x=\"170\" y=\"180\" class=\"lbl\">新候选 C̃=tanh(...) 从下往上注入</text>\n<!-- 输出门 -->\n<g class=\"lt3\"><line x1=\"288\" y1=\"70\" x2=\"288\" y2=\"142\" class=\"gv\" stroke=\"#7aa2ff\"/><text x=\"266\" y=\"62\" class=\"lblb\" fill=\"#7aa2ff\">③ 输出门 o</text><text x=\"258\" y=\"156\" class=\"lbl\">决定掏出哪页 → h_t</text></g>\n<g class=\"out\"><rect x=\"296\" y=\"94\" width=\"10\" height=\"10\" class=\"bg\" rx=\"2\"/><path d=\"M320 99 L 340 99\" stroke=\"#7aa2ff\" stroke-width=\"2\"/><text x=\"322\" y=\"88\" class=\"lblb\" fill=\"#7aa2ff\">h</text></g>\n<text x=\"24\" y=\"212\" class=\"lbl\">口诀：先撕旧账（f），再记新事（i），最后决定现在拿出哪页用（o）。GRU 把 ①② 合并成一个更新门。</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<p>看动画：传送带上绿色颗粒是保留的旧记忆；遗忘门先撕掉两页红色（$f$ 接近 0 的部分），输入门注入新颗粒（$i$ 打开），输出门最后挑出当前要用的部分送出成 h。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、GRU：把三本账合成两本</h3>"
+},
+{
+"type": "html",
+"html": "<p>GRU 没有单独的细胞状态，把遗忘门和输入门<strong>合成更新门 $z_t$</strong>（1−z 就是要忘的比例），再加复位门 $r_t$ 控制读旧记忆的方式。参数量少约 1/4，效果常常相当——<strong>数据少、算力紧时优先试 GRU</strong>。</p>\n<blockquote><strong>别忘了</strong>：LSTM/GRU 仍是逐时间步串行，训练慢；大批量并行请转 TCN 或时序 Transformer。</blockquote>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"对应的旧记忆 C_{t-1} 成分被清除",
+"模型停止工作",
+"输出 h_t 归零",
+"学习率过大"
+],
+"id": "lsn-lstm-gates-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "LSTM 三门：会记事的循环网络",
+"stem": "LSTM 中遗忘门 f_t 的输出接近 0 意味着？",
+"answer": "A",
+"explain": "遗忘门逐元素作用于旧 C：f→0 撕掉该维度的旧记忆，f→1 原样保留。这就是\"选择性遗忘\"的机制本体。",
+"source": "LSTM与GRU · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">六、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>三门分工：<strong>遗忘管旧、输入管新、输出管展示</strong>；C 是长期记忆，h 是工作记忆。</li><li>工程默认值：hidden 32–256、1–2 层、dropout 0.1–0.3、梯度裁剪 1–5。</li><li>下一步：读概念卡《LSTM与GRU》记公式细节；刷题库「LSTM/GRU」一组；再看精讲《注意力机制三步走》理解\"为什么 Transformer 要取代循环\"。</li></ul>"
+}
+]
+},
+{
+"id": "pricing-six-strategies",
+"title": "报价策略六类：从锁风险到智能进化",
+"subtitle": "中长期 3 类 + 现货 3 类 + 一体化引擎 · 电力精读 ⑨",
+"library": "power",
+"minutes": 8,
+"hue": 25,
+"intro": "<blockquote>一句话：<strong>中长期管\"别死\"（对冲风险），现货管\"多赚\"（优化收益），一体化引擎让两者联动进化</strong>。三个锚点：24 时段、6 大类、RL 提升 5%~7%。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、六类策略地图</h3>"
+},
+{
+"type": "anim",
+"name": "sixstrategies.svg",
+"svg": "<svg viewBox=\"0 0 360 250\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\">\n<style>\n.lbl{fill:#8fa1c0;font-size:8.6px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:9.4px;font-weight:700;font-family:-apple-system,sans-serif}\n.col{fill:#131f38;stroke:#3d558a;stroke-width:1.3}\n.s1{stroke:#34d399}.s2{stroke:#f5a524}\n.card{stroke-width:1.5;fill:rgba(45,212,191,.05)}\n.flash{animation:fl 8s infinite}\n@keyframes fl{0%,42%{opacity:0}50%,90%{opacity:1}100%{opacity:0}}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">六大策略分两大市场：中长期管风险，现货管收益</text>\n<rect x=\"24\" y=\"26\" width=\"148\" height=\"22\" class=\"col s1\" rx=\"7\"/><text x=\"98\" y=\"41\" class=\"lblb\" text-anchor=\"middle\">中长期市场 · 锁风险</text>\n<rect x=\"188\" y=\"26\" width=\"148\" height=\"22\" class=\"col s2\" rx=\"7\"/><text x=\"262\" y=\"41\" class=\"lblb\" text-anchor=\"middle\">现货市场 · 提收益</text>\n<g><rect x=\"24\" y=\"58\" width=\"148\" height=\"34\" class=\"card s1\" rx=\"7\"/><text x=\"32\" y=\"71\" class=\"lblb\">S1 动态对冲滚动持仓</text><text x=\"32\" y=\"84\" class=\"lbl\">均值-方差框架滚动调对冲比例</text></g>\n<g><rect x=\"24\" y=\"100\" width=\"148\" height=\"34\" class=\"card s1\" rx=\"7\"/><text x=\"32\" y=\"113\" class=\"lblb\">S2 量化风险约束</text><text x=\"32\" y=\"126\" class=\"lbl\">CVaR 压尾部极端损失</text></g>\n<g><rect x=\"24\" y=\"142\" width=\"148\" height=\"34\" class=\"card s1\" rx=\"7\"/><text x=\"32\" y=\"155\" class=\"lblb\">S3 基差与价差交易</text><text x=\"32\" y=\"168\" class=\"lbl\">跨期/跨区价差结构套利</text></g>\n<g><rect x=\"188\" y=\"58\" width=\"148\" height=\"34\" class=\"card s2\" rx=\"7\"/><text x=\"196\" y=\"71\" class=\"lblb\">S4 出清反推 ★</text><text x=\"196\" y=\"84\" class=\"lbl\">SCUC/SCED 预判 LMP 定区间</text></g>\n<g><rect x=\"188\" y=\"100\" width=\"148\" height=\"34\" class=\"card s2\" rx=\"7\"/><text x=\"196\" y=\"113\" class=\"lblb\">S5 强化学习智能报价</text><text x=\"196\" y=\"126\" class=\"lbl\">DQN/PPO/MADDPG，收益 +5%~7%</text></g>\n<g><rect x=\"188\" y=\"142\" width=\"148\" height=\"34\" class=\"card s2\" rx=\"7\"/><text x=\"196\" y=\"155\" class=\"lblb\">S6 博弈均衡</text><text x=\"196\" y=\"168\" class=\"lbl\">古诺/供给函数均衡推演对手</text></g>\n<g class=\"flash\"><rect x=\"24\" y=\"192\" width=\"312\" height=\"26\" class=\"col\" rx=\"8\" stroke=\"#2dd4bf\" stroke-width=\"1.4\"/>\n<text x=\"180\" y=\"209\" class=\"lblb\" text-anchor=\"middle\" fill=\"#7ef0df\">一体化引擎 = RL + LLM + 博弈论：多层次 · 可解释 · 能进化</text></g>\n<text x=\"24\" y=\"238\" class=\"lbl\">演进：经验式 → 量化模型 → 智能一体化；锚点：24 时段 / 6 大类 / 5%~7%</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、各策略一句话</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li><strong>S1 动态对冲滚动持仓</strong>：均值-方差框架下，按行情滚动调最优对冲比例——\"现货涨我减对冲、跌我加对冲\"；</li><li><strong>S2 量化风险约束</strong>：在 S1 上加 CVaR 尾部约束——小概率大亏绝不允许；</li><li><strong>S3 基差与价差交易</strong>：跨期、跨区、丰枯价差结构套利；</li><li><strong>S4 出清反推</strong>（现货主流）：预测负荷与新能源 → 成本曲线 → 预判 LMP → 定区间 → 阻塞区微调。<strong>同质化是其最大风险</strong>；</li><li><strong>S5 强化学习</strong>：状态=行情+对手+持仓，奖励=收益−风险惩罚；三大挑战=数据/非平稳/可解释；</li><li><strong>S6 博弈均衡</strong>：把对手行为显式建模（古诺/供给函数均衡）。</li></ul>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、组合而非单选</h3>"
+},
+{
+"type": "html",
+"html": "<p>实战不是六选一：基准仓位用 S1+S2 锁风险，现货侧用 S4 打底 + S6 感知拥挤度，数据积累后逐步引入 S5 做增强——<strong>可解释的部分用人，模式识别的部分用机器</strong>。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"中长期合约从锁电量转向风险管理工具",
+"S4 出清反推的同质化风险来自多数主体用同类方法",
+"S5 RL 在合规审计场景受限于可解释性",
+"六大策略互相排斥只能选一种",
+"一体化引擎强调多层次/可解释/能进化"
+],
+"id": "lsn-pricing-six-strategies-1",
+"type": "multi",
+"difficulty": 2,
+"library": "power",
+"topic": "报价策略六类：从锁风险到智能进化",
+"stem": "关于报价策略演进与组合，正确的有？",
+"answer": "A,B,C,E",
+"explain": "D 错：实战是组合（S1+S2 锁底 + S4/S6 现货 + S5 渐进增强）。记住演进三阶段与\"组合而非单选\"。",
+"source": "电力市场报价策略深度研究 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>两大市场分工 + 六类策略 + 一体化引擎；锚点数字 24/6/5%~7%。</li><li>S4 五步链与 S5 三挑战是面试级考点。</li><li>下一步：读概念卡《电力市场报价策略深度研究》分节细节；刷题库「报价策略」两组。</li></ul>"
+}
+]
+},
+{
+"id": "spot-clearing",
+"title": "电力现货市场是怎么出清的",
+"subtitle": "15 分钟一个时段，价格谁说了算 · 通勤精读 ①",
+"library": "power",
+"minutes": 7,
+"hue": 36,
+"intro": "<blockquote>一句话：<strong>卖方按成本从低到高排队，需求一刀切下去，切到哪一格，哪一格就是出清价。</strong> 这节精讲 7 分钟，看懂日前市场的价格是怎么「试」出来的。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、先想清楚：现货在解决什么问题</h3>"
+},
+{
+"type": "html",
+"html": "<p>电力最麻烦的地方：<strong>电几乎存不下来，发用必须实时平衡</strong>。新能源多了之后，风一停、云一过，供需就抖。中长期合约能锁定大部分电量和价格，但挡不住「明天的风到底吹不吹」。</p>\n<p>所以要有现货市场：<strong>提前一天（日前）和实时（小时级/15 分钟级）再平衡</strong>，让价格告诉所有机组「现在该谁发、不该谁发」。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、核心机制：报价从低到高排队（merit order）</h3>"
+},
+{
+"type": "html",
+"html": "<p>每个时段，卖方报量报价：风光边际成本接近 0 报最低，煤电居中，气电最高。<strong>市场把报价从低到高排成一列阶梯</strong>——这就是供给曲线。需求这边，调度机构汇总该时段的负荷预测，一刀切下来。</p>\n<p>切点左侧的机组全部中标发电，切点右侧落标。<strong>切点的纵坐标，就是这个时段的出清价</strong>：所有中标机组都按这个价格结算，而不是按各自报价。</p>"
+},
+{
+"type": "anim",
+"name": "clearing.svg",
+"svg": "<svg viewBox=\"0 0 360 240\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\" role=\"img\" aria-label=\"现货市场出清动画\">\n<style>\n.ax{stroke:#5b6b85;stroke-width:1.2}.grid{stroke:#24304a;stroke-width:.6;stroke-dasharray:3 3}\n.lbl{fill:#8fa1c0;font-size:9px;font-family:-apple-system,sans-serif}\n.lblb{fill:#dbe4f5;font-size:10px;font-weight:600;font-family:-apple-system,sans-serif}\n.segA{fill:#2f9e6e}.segB{fill:#e0a63a}.segC{fill:#d96b4a}\n.demand{stroke:#7aa2ff;stroke-width:2.4;fill:none}\n.cline{stroke:#f5d76e;stroke-width:1.6;stroke-dasharray:5 4}\n.cdot{fill:#f5d76e}\n.ok{animation:okp 5s infinite}.no{animation:nop 5s infinite}\n@keyframes okp{0%,55%{opacity:.12}70%,95%{opacity:.55}100%{opacity:.12}}\n@keyframes nop{0%,55%{opacity:.55}70%,95%{opacity:.10}100%{opacity:.55}}\n.fall{animation:fall 5s infinite}\n@keyframes fall{0%{transform:translateY(-95px)}45%{transform:translateY(-95px)}62%,95%{transform:translateY(0)}100%{transform:translateY(-95px)}}\n.fade{animation:fade 5s infinite}\n@keyframes fade{0%,58%{opacity:0}66%,95%{opacity:1}100%{opacity:0}}\n.priceflash{animation:pf 5s infinite}\n@keyframes pf{0%,60%{opacity:0}68%,95%{opacity:1}100%{opacity:0}}\n</style>\n<text x=\"8\" y=\"14\" class=\"lblb\">日前市场出清：价格从高往低试，试到供需相交</text>\n<line x1=\"40\" y1=\"200\" x2=\"330\" y2=\"200\" class=\"ax\"/>\n<line x1=\"40\" y1=\"200\" x2=\"40\" y2=\"30\" class=\"ax\"/>\n<text x=\"300\" y=\"214\" class=\"lbl\">电量 →</text>\n<text x=\"14\" y=\"40\" class=\"lbl\" transform=\"rotate(-90 14 40)\">价格 ↑</text>\n<g class=\"grid\"><line x1=\"40\" y1=\"70\" x2=\"330\" y2=\"70\"/><line x1=\"40\" y1=\"110\" x2=\"330\" y2=\"110\"/><line x1=\"40\" y1=\"150\" x2=\"330\" y2=\"150\"/></g>\n<!-- 供给阶梯（merit order）：低价新能源→煤电→气电 -->\n<g>\n<rect x=\"40\" y=\"140\" width=\"60\" height=\"60\" class=\"segA ok\"/><text x=\"46\" y=\"172\" class=\"lblb\">风光 0-200</text>\n<rect x=\"100\" y=\"110\" width=\"70\" height=\"90\" class=\"segB ok\"/><text x=\"108\" y=\"150\" class=\"lblb\">煤电 200-350</text>\n<rect x=\"170\" y=\"80\" width=\"60\" height=\"120\" class=\"segC no\"/><text x=\"176\" y=\"120\" class=\"lblb\">气电 350+</text>\n</g>\n<!-- 需求线 -->\n<path d=\"M255 200 L255 44\" class=\"demand\"/>\n<text x=\"260\" y=\"52\" class=\"lblb\">需求</text>\n<!-- 出清价线从上往下降 -->\n<g class=\"fall\"><line x1=\"40\" y1=\"120\" x2=\"330\" y2=\"120\" class=\"cline\"/><circle cx=\"255\" cy=\"120\" r=\"4\" class=\"cdot\"/></g>\n<g class=\"fade\">\n<line x1=\"40\" y1=\"120\" x2=\"330\" y2=\"120\" class=\"cline\" opacity=\".5\"/>\n<text x=\"60\" y=\"116\" class=\"lblb\" fill=\"#f5d76e\">出清价 350 元/MWh</text>\n<text x=\"285\" y=\"70\" class=\"lbl\">以上机组</text>\n<text x=\"285\" y=\"80\" class=\"lbl\">全部中标</text>\n</g>\n<g class=\"priceflash\">\n<rect x=\"40\" y=\"200\" width=\"215\" height=\"30\" fill=\"#2f9e6e\" opacity=\".18\"/>\n<text x=\"50\" y=\"222\" class=\"lblb\">✓ 中标：风光 + 煤电（按报价从低到高排进来）</text>\n<text x=\"175\" y=\"238\" class=\"lbl\">气电报价高于出清价 → 落标（红色块）</text>\n</g>\n</svg>"
+},
+{
+"type": "html",
+"html": "<p>看动画：黄色出清价线从上往下试，试到和需求线相交停住——左侧绿色是中标机组，右侧红色落标。这就是为什么「新能源大发的中午，电价经常被打到地板价甚至负价」：低报价机组把阶梯最左边全占了。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、落到公式：四本账别混</h3>"
+},
+{
+"type": "html",
+"html": "<p>出清完成后，结算拆成四本账：日前按出清量×出清价、实时按实际量×实时价、偏差按（实际−合约）×现货价，再加上辅助服务与容量电费。<strong>日前+实时+偏差+中长期，才是综合电费的全貌。</strong></p>\n<blockquote><strong>记住</strong>：现货价是「边际机组」定的。看懂每个时段的边际机组是谁，就看懂了价格。</blockquote>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、想一想</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"被打到很低甚至负值",
+"必然上涨",
+"与报价无关由行政定价",
+"保持不变"
+],
+"id": "lsn-spot-clearing-1",
+"type": "choice",
+"difficulty": 2,
+"library": "power",
+"topic": "电力现货市场是怎么出清的",
+"stem": "某时段风光大发、报价接近 0 且供给充足，此时现货出清价通常会？",
+"answer": "A",
+"explain": "低边际成本机组占据 merit order 最左侧，切点价格被拉低；供给过剩时甚至出负价（用电倒拿钱）。这正是山西、山东午间常见的价格形态。",
+"source": "现货市场出清 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li><strong>出清 = 排序 + 一刀切</strong>：merit order 决定谁中标，切点决定价格。</li><li>价格信号引导次日机组组合：贵机组白天落标、晚高峰回归——读懂阶梯就读懂了日报价策略。</li><li>下一步：回到「学习」页读概念卡《现货市场结算公式》，把四本账的变量记熟；再刷题库「现货结算」一组。</li></ul>"
+}
+]
+},
+{
+"id": "storage-arbitrage",
+"title": "储能峰谷套利，一页讲透",
+"subtitle": "96 个 15 分钟点里的「买低卖高」 · 通勤精读 ③",
+"library": "sghc",
+"minutes": 6,
+"hue": 155,
+"intro": "<blockquote>一句话：<strong>凌晨电价低谷时充电，晚高峰电价高时放电，价差减去度电成本，就是套利利润。</strong> 听着简单，魔鬼在 96 个 15 分钟点里。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、价差就是收益空间</h3>"
+},
+{
+"type": "html",
+"html": "<p>现货价格一天之内大幅波动：光伏大发的中午和深夜低谷价格走低，晚高峰价格飙升。储能就是一个「时间搬运工」——把便宜的电存到贵的时候卖。</p>\n<p>$$\text{单笔利润} = (\text{放电价} - \text{充电价}) \times \text{放电量} - \text{度电成本} \times \text{循环量}$$</p>\n<p>度电成本 = 投资折算 + 运维 + 衰减。充放一次价差 0.4 元/度、度电成本 0.2 元，净赚 0.2 元/度；一天一充一放，年化收益才能Cover住投资。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、读懂 96 点价格曲线</h3>"
+},
+{
+"type": "html",
+"html": "<p>现货出清价格每 15 分钟一个点，一天 96 个。储能套利测算就是在这条曲线上「选窗口」：<strong>找一个低价连续窗口充电，再找一个高价连续窗口放电</strong>。</p>"
+},
+{
+"type": "anim",
+"name": "arbitrage.svg",
+"svg": "<svg viewBox=\"0 0 360 240\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\" role=\"img\" aria-label=\"储能峰谷套利动画\">\n<style>\n.ax{stroke:#5b6b85;stroke-width:1.2}.grid{stroke:#24304a;stroke-width:.6;stroke-dasharray:3 3}\n.lbl{fill:#8fa1c0;font-size:9px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:10px;font-weight:700;font-family:-apple-system,sans-serif}\n.curve{stroke:#7aa2ff;stroke-width:2.2;fill:none}\n.zone{fill:#123528;opacity:.55}\n.zone2{fill:#3d2a12;opacity:.55}\n.ch{stroke:#34d399;stroke-width:2;fill:none}.dch{stroke:#f5a524;stroke-width:2;fill:none}\n.arr{animation:ar 6s infinite}\n@keyframes ar{0%,100%{opacity:.2}12%,30%{opacity:1}45%,90%{opacity:.2}}\n.arr2{animation:ar2 6s infinite}\n@keyframes ar2{0%,42%{opacity:.2}55%,78%{opacity:1}90%,100%{opacity:.2}}\n.coin{animation:coin 6s infinite}\n@keyframes coin{0%,28%{opacity:0;transform:translateY(6px)}36%,95%{opacity:1;transform:translateY(0)}100%{opacity:0}}\n.coin2{animation:coin2 6s infinite}\n@keyframes coin2{0%,60%{opacity:0;transform:translateY(6px)}70%,95%{opacity:1;transform:translateY(0)}100%{opacity:0}}\n.soc{fill:#34d399}.soce{fill:none;stroke:#3d558a;stroke-width:1.2}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">一天 96 个 15 分钟点：低价买入，高价卖出</text>\n<line x1=\"34\" y1=\"190\" x2=\"330\" y2=\"190\" class=\"ax\"/>\n<line x1=\"34\" y1=\"190\" x2=\"34\" y2=\"28\" class=\"ax\"/>\n<g class=\"grid\"><line x1=\"34\" y1=\"70\" x2=\"330\" y2=\"70\"/><line x1=\"34\" y1=\"120\" x2=\"330\" y2=\"120\"/><line x1=\"34\" y1=\"160\" x2=\"330\" y2=\"160\"/></g>\n<text x=\"310\" y=\"204\" class=\"lbl\">时间 →</text>\n<text x=\"8\" y=\"36\" class=\"lbl\" transform=\"rotate(-90 8 36)\">电价</text>\n<text x=\"60\" y=\"204\" class=\"lbl\">0 时</text><text x=\"160\" y=\"204\" class=\"lbl\">8 时</text><text x=\"240\" y=\"204\" class=\"lbl\">18 时</text><text x=\"300\" y=\"204\" class=\"lbl\">24 时</text>\n<!-- 充电窗口（凌晨低谷）与放电窗口（晚高峰） -->\n<rect x=\"70\" y=\"30\" width=\"55\" height=\"160\" class=\"zone\"/>\n<rect x=\"235\" y=\"30\" width=\"40\" height=\"160\" class=\"zone2\"/>\n<text x=\"72\" y=\"42\" class=\"lbl\" fill=\"#34d399\">充电窗口</text>\n<text x=\"237\" y=\"42\" class=\"lbl\" fill=\"#f5a524\">放电窗口</text>\n<!-- 价格曲线 -->\n<path d=\"M34 150 C 60 165, 80 168, 100 162 S 140 120, 170 110 S 220 130, 245 60 S 290 55, 310 120 L 330 150\" class=\"curve\"/>\n<!-- 充放电箭头 -->\n<g class=\"arr\"><path d=\"M120 168 L 120 140\" class=\"ch\" marker-end=\"url(#ah)\"/><text x=\"96\" y=\"136\" class=\"lblb\" fill=\"#34d399\">充电 ↓</text></g>\n<g class=\"arr2\"><path d=\"M255 96 L 255 124\" class=\"dch\"/><text x=\"230\" y=\"92\" class=\"lblb\" fill=\"#f5a524\">放电 ↑</text></g>\n<defs><marker id=\"ah\" markerWidth=\"7\" markerHeight=\"7\" refX=\"3.5\" refY=\"3.5\" orient=\"auto\"><circle cx=\"3.5\" cy=\"3.5\" r=\"2.4\" fill=\"#34d399\"/></marker></defs>\n<!-- 收益 -->\n<g class=\"coin\"><text x=\"150\" y=\"60\" class=\"lblb\" fill=\"#34d399\">价差 = 放电价 − 充电价 − 度电成本</text></g>\n<g class=\"coin2\"><text x=\"150\" y=\"76\" class=\"lbl\">一天可循环 1–2 次，价差稳定即为「印钞机」</text></g>\n<!-- 电池 SOC 小条 -->\n<text x=\"34\" y=\"222\" class=\"lbl\">电池 SOC：</text>\n<rect x=\"90\" y=\"212\" width=\"180\" height=\"12\" class=\"bx soce\"/>\n<rect x=\"90\" y=\"212\" width=\"20\" height=\"12\" class=\"bx soc\" style=\"animation:soc 6s infinite\"/>\n<style>@keyframes soc{0%{width:20px}30%{width:170px}78%{width:20px}100%{width:20px}}</style>\n<text x=\"276\" y=\"222\" class=\"lbl\">凌晨充满 → 晚峰放空</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<p>看动画：凌晨低谷区绿色窗口充电（SOC 拉满），晚高峰橙色窗口放电。单循环模式一天一充一放；多循环模式一天可轮换 2 次以上——但受电池倍率和 SOC 约束，不是想充几次就几次。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、别忘了负电价这份「礼物」</h3>"
+},
+{
+"type": "html",
+"html": "<p>新能源大发时段，出清价可以是<strong>负数</strong>（知识库记录最低约 −100 元/MWh）。这意味着：储能此时充电不但不花钱，<strong>还能拿钱</strong>。负电价时段就是套利模型的「超级充电窗口」。</p>\n<blockquote><strong>坑点</strong>：如果测算脚本没正确处理负值（比如过滤掉了「异常值」），会系统性低估收益。看到负价先别删，先想是不是机会。</blockquote>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"此时充电可同时获得「免电费 + 补贴」，是最佳充电窗口",
+"必须停机避免亏损",
+"数据异常应删除",
+"只能放电不能充电"
+],
+"id": "lsn-storage-arbitrage-1",
+"type": "choice",
+"difficulty": 2,
+"library": "sghc",
+"topic": "储能峰谷套利，一页讲透",
+"stem": "某日出清曲线显示凌晨 1–5 时电价为 −40 元/MWh。对储能来说这意味着？",
+"answer": "A",
+"explain": "负电价 = 用电倒拿钱；储能充电边际成本为负，叠加放电高价，单笔价差最大化。处理数据时保留负值是套利测算的关键细节。",
+"source": "储能套利空间计算逻辑 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>套利三要素：<strong>低价窗口、高价窗口、度电成本</strong>；先算净价差再谈投资。</li><li>测算粒度 15 分钟（96 点/天）；输出要给出充放窗口与均价，而不是只给一天一个数。</li><li>下一步：读概念卡《储能套利空间计算逻辑》看输入输出格式；刷题库「源网荷储」一组；「电力市场报价策略深度研究」里有 6 大报价策略等着你。</li></ul>"
+}
+]
+},
+{
+"id": "system12-trader",
+"title": "双系统与交易员：你的大脑怎么决策",
+"subtitle": "System1/2、四类偏差与免疫方案 · 建模精读 ⑩",
+"library": "model",
+"minutes": 7,
+"hue": 200,
+"intro": "<blockquote>一句话：<strong>系统 1 是自动驾驶（快、省电、常翻车），系统 2 是手动驾驶（慢、烧脑、能纠错）——交易员的风控体系，本质是给自动驾驶装\"接管开关\"</strong>。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、双系统驾驶舱</h3>"
+},
+{
+"type": "anim",
+"name": "dualsystem.svg",
+"svg": "<svg viewBox=\"0 0 360 240\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\">\n<style>\n.lbl{fill:#8fa1c0;font-size:8.6px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:9.6px;font-weight:700;font-family:-apple-system,sans-serif}\n.lane1{fill:rgba(52,211,153,.08);stroke:#34d399;stroke-width:1.5}\n.lane2{fill:rgba(122,162,255,.08);stroke:#7aa2ff;stroke-width:1.5}\n.chip{fill:#131f38;stroke:#3d558a;stroke-width:1.1}\n.warn{stroke:#f87171;stroke-width:1.4;fill:rgba(248,113,113,.06)}\n.arr{animation:arr 6s infinite}\n@keyframes arr{0%,20%{opacity:.2}30%,88%{opacity:1}100%{opacity:.2}}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">双系统驾驶舱：S1 自动巡航，S2 手动接管（含风控清单）</text>\n<rect x=\"20\" y=\"30\" width=\"150\" height=\"76\" class=\"lane1\" rx=\"10\"/>\n<text x=\"34\" y=\"50\" class=\"lblb\" fill=\"#7ef0c9\">系统 1 · 自动驾驶</text>\n<text x=\"34\" y=\"66\" class=\"lbl\">快、自动、直觉、省电</text>\n<text x=\"34\" y=\"82\" class=\"lbl\">盘面一眼不对劲 → 报警</text>\n<rect x=\"34\" y=\"90\" width=\"60\" height=\"12\" class=\"chip\" rx=\"6\"/><text x=\"64\" y=\"99\" class=\"lbl\" text-anchor=\"middle\">专家直觉</text>\n<rect x=\"190\" y=\"30\" width=\"150\" height=\"76\" class=\"lane2\" rx=\"10\"/>\n<text x=\"204\" y=\"50\" class=\"lblb\" fill=\"#aec6ff\">系统 2 · 手动驾驶</text>\n<text x=\"204\" y=\"66\" class=\"lbl\">慢、费力、逻辑、烧脑</text>\n<text x=\"204\" y=\"82\" class=\"lbl\">心算 17×24、复核、复盘</text>\n<rect x=\"204\" y=\"90\" width=\"60\" height=\"12\" class=\"chip\" rx=\"6\"/><text x=\"234\" y=\"99\" class=\"lbl\" text-anchor=\"middle\">风险清单</text>\n<g class=\"arr\">\n<path d=\"M170 52 L 190 52\" stroke=\"#f5a524\" stroke-width=\"2\" stroke-dasharray=\"4 3\"/>\n<text x=\"180\" y=\"44\" class=\"lblb\" fill=\"#f5a524\" text-anchor=\"middle\">接管</text>\n</g>\n<text x=\"180\" y=\"124\" class=\"lblb\" text-anchor=\"middle\" fill=\"#f87171\">S1 的四类典型翻车（交易版）</text>\n<g><rect x=\"20\" y=\"134\" width=\"76\" height=\"42\" class=\"warn\" rx=\"8\"/><text x=\"58\" y=\"150\" class=\"lblb\" text-anchor=\"middle\">过度自信</text><text x=\"58\" y=\"164\" class=\"lbl\" text-anchor=\"middle\">80%自信</text><text x=\"58\" y=\"174\" class=\"lbl\" text-anchor=\"middle\">实际55%命中</text></g>\n<g><rect x=\"104\" y=\"134\" width=\"76\" height=\"42\" class=\"warn\" rx=\"8\"/><text x=\"142\" y=\"150\" class=\"lblb\" text-anchor=\"middle\">确认偏误</text><text x=\"142\" y=\"164\" class=\"lbl\" text-anchor=\"middle\">只看支持</text><text x=\"142\" y=\"174\" class=\"lbl\" text-anchor=\"middle\">自己仓位的消息</text></g>\n<g><rect x=\"188\" y=\"134\" width=\"76\" height=\"42\" class=\"warn\" rx=\"8\"/><text x=\"226\" y=\"150\" class=\"lblb\" text-anchor=\"middle\">处置效应</text><text x=\"226\" y=\"164\" class=\"lbl\" text-anchor=\"middle\">早止盈</text><text x=\"226\" y=\"174\" class=\"lbl\" text-anchor=\"middle\">死扛亏损</text></g>\n<g><rect x=\"272\" y=\"134\" width=\"68\" height=\"42\" class=\"warn\" rx=\"8\"/><text x=\"306\" y=\"150\" class=\"lblb\" text-anchor=\"middle\">锚定</text><text x=\"306\" y=\"164\" class=\"lbl\" text-anchor=\"middle\">被开盘价</text><text x=\"306\" y=\"174\" class=\"lbl\" text-anchor=\"middle\">牵着走</text></g>\n<text x=\"20\" y=\"200\" class=\"lbl\">免疫方案（知识库口径）：清单 + 双人复核 + 强制冷却期 + 训练数据 debias</text>\n<text x=\"20\" y=\"216\" class=\"lbl\">AI 类比：S1≈Jev 快速模式匹配；S2≈LLM 长上下文推理；ACC 冲突监控≈置信度门控</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<p>系统 1 识别脸孔、读母语、2+2——专家看盘\"一眼不对劲\"就是压缩过的系统 2 经验；系统 2 做心算、逻辑、复核。<strong>系统 2 很懒</strong>：能用系统 1 绝不动用——所以偏差是默认状态，不是例外。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、交易员的四类高频翻车</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li><strong>过度自信</strong>：80% 置信实际 55% 命中 → 仓位过重；</li><li><strong>确认偏误</strong>：只找支持自己仓位的信息 → 止损失明；</li><li><strong>处置效应</strong>（前景理论活标本）：浮盈急落袋、浮亏死扛；</li><li><strong>锚定</strong>：被开盘价/成本价/目标价牵着走。</li></ul>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、免疫方案：结构 &gt; 自觉</h3>"
+},
+{
+"type": "html",
+"html": "<p>知识库的关键结论：<strong>\"知道了\"不能\"免疫\"</strong>——偏差是自动的，当时无感。要靠结构：① 交易前清单（仓位/止损/情景）；② 双人复核关键单；③ 强制冷却期（情绪单 30 分钟后再下）；④ 模型训练数据 debias（AI 会把人类偏差机器化）。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、AI 映射（Jev 视角）</h3>"
+},
+{
+"type": "html",
+"html": "<p>系统 1 ≈ Jev 的快速模式匹配；系统 2 ≈ LLM 的长上下文推理；前扣带回 ACC 的\"这题不对劲\"≈混合架构的<strong>置信度门控</strong>。指挥 AI 时问一句：\"这一步是系统 1 干的还是需要系统 2？置信度谁监控？\"</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"偏差是自动触发的，知识只支持事后识别——必须靠清单/复核/冷却期等结构兜底",
+"因为清单太贵",
+"偏差只影响新手",
+"AI 可以完全替代人"
+],
+"id": "lsn-system12-trader-1",
+"type": "choice",
+"difficulty": 2,
+"library": "model",
+"topic": "双系统与交易员：你的大脑怎么决策",
+"stem": "为什么\"知道偏差清单\"不足以避免交易中的认知偏差？",
+"answer": "A",
+"explain": "出厂设置改不掉，只能加\"外置护栏\"。这也是 Jev 类 System One 模型要数据 debias 的原因。",
+"source": "System1与System2/启发式与偏差 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">六、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>双系统分工 + 四类交易偏差 + 结构免疫四件套。</li><li>下一步：读概念卡《System1与System2》《前景理论》《启发式与偏差》；刷题库「双系统/前景理论」一组。</li></ul>"
+}
+]
+},
+{
+"id": "transformer-block",
+"title": "Transformer 块：一切 LLM 的积木",
+"subtitle": "多头注意力 + FFN + 残差 + LayerNorm · 建模精读 ⑤",
+"library": "model",
+"minutes": 8,
+"hue": 210,
+"intro": "<blockquote>一句话：<strong>把\"多头注意力 + 前馈网络 + 残差归一化\"打包成一块标准积木，堆 N 层就是所有大模型</strong>。学会读这块积木，任何 Transformer 论文的架构图你都能一眼看穿。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、四个零件各管一件事</h3>"
+},
+{
+"type": "figure",
+"name": "block.svg",
+"svg": "<svg viewBox=\"0 0 360 240\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\">\n<style>\n.lbl{fill:#8fa1c0;font-size:9px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:10px;font-weight:700;font-family:-apple-system,sans-serif}\n.blk{fill:#182544;stroke:#3d558a;stroke-width:1.3;rx:8}\n.blk{fill:#182544}\n.hw{stroke:#f5a524;stroke-width:2;fill:none}\n.flow{stroke:#2dd4bf;stroke-width:1.6;fill:none;stroke-dasharray:5 4;animation:dash 2s linear infinite}\n@keyframes dash{to{stroke-dashoffset:-18}}\n.ln{stroke:#3d558a;stroke-width:1.2}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">一个 Transformer 块 = 注意力(会诊) + FFN(消化) + 残差(高架) + LN(统一音量)</text>\n<!-- 输入 -->\n<rect x=\"24\" y=\"26\" width=\"70\" height=\"22\" class=\"blk\" rx=\"6\"/><text x=\"59\" y=\"41\" class=\"lblb\" text-anchor=\"middle\">输入 X</text>\n<!-- 注意力子层 -->\n<rect x=\"120\" y=\"22\" width=\"120\" height=\"30\" fill=\"#12333d\" stroke=\"#38c6e0\" stroke-width=\"1.4\" rx=\"6\"/>\n<text x=\"180\" y=\"41\" class=\"lblb\" text-anchor=\"middle\" fill=\"#bfeef7\">LN → 多头注意力</text>\n<!-- FFN 子层 -->\n<rect x=\"120\" y=\"92\" width=\"120\" height=\"30\" fill=\"#123528\" stroke=\"#34d399\" stroke-width=\"1.4\" rx=\"6\"/>\n<text x=\"180\" y=\"111\" class=\"lblb\" text-anchor=\"middle\" fill=\"#c9f5df\">LN → FFN(d_ff=4d)</text>\n<!-- 输出 -->\n<rect x=\"262\" y=\"92\" width=\"76\" height=\"30\" class=\"blk\" rx=\"6\"/><text x=\"300\" y=\"111\" class=\"lblb\" text-anchor=\"middle\">输出 X''</text>\n<!-- 主路箭头 -->\n<path d=\"M94 37 L 120 37\" class=\"flow\"/><path d=\"M240 37 L 300 37 L 300 92\" class=\"flow\" opacity=\".0\"/>\n<path d=\"M180 52 L 180 92\" class=\"flow\"/>\n<path d=\"M240 107 L 262 107\" class=\"flow\"/>\n<!-- 残差高架 1 -->\n<path d=\"M94 30 C 105 30, 105 14, 118 14 L 240 14 C 252 14, 252 30, 262 30\" class=\"hw\"/>\n<text x=\"128\" y=\"10\" class=\"lbl\" fill=\"#f5a524\">残差 +：梯度高速回传</text>\n<path d=\"M262 30 L 262 22 L 180 22 L 180 22\" class=\"hw\" opacity=\"0\"/>\n<circle cx=\"180\" cy=\"22\" r=\"2.4\" fill=\"#f5a524\"/>\n<path d=\"M262 30 L 262 24 L 180 24\" class=\"hw\"/>\n<!-- 残差高架 2 -->\n<path d=\"M300 122 L 300 170 L 60 170 L 60 44 L 94 44\" class=\"hw\" opacity=\".85\"/>\n<text x=\"150\" y=\"182\" class=\"lbl\" fill=\"#f5a524\">残差 +：每层只学\"增量\"，原始信号不丢</text>\n<!-- 堆叠 -->\n<text x=\"24\" y=\"214\" class=\"lbl\">这个积木可以堆 N 层（6–96+）：x N → 就是 GPT/BERT/PatchTST 的全部秘密</text>\n<g opacity=\".55\"><rect x=\"24\" y=\"196\" width=\"70\" height=\"14\" class=\"blk\" rx=\"4\"/><rect x=\"100\" y=\"196\" width=\"70\" height=\"14\" class=\"blk\" rx=\"4\"/><rect x=\"176\" y=\"196\" width=\"70\" height=\"14\" class=\"blk\" rx=\"4\"/><rect x=\"252\" y=\"196\" width=\"70\" height=\"14\" class=\"blk\" rx=\"4\"/></g>\n</svg>"
+},
+{
+"type": "html",
+"html": "<ul><li><strong>多头注意力 MHA</strong>=多个专家同时会诊：不同头学不同关系（一个盯日周期、一个盯天气响应）；</li><li><strong>FFN</strong>=每个位置各自的消化车间：把注意力混合好的表示再非线性加工一遍，$d_{ff}$ 通常是 $d_{model}$ 的 4 倍；</li><li><strong>残差连接</strong>=给信息修高架桥：$X + \\text{MHA}(X)$，梯度沿高架直接回传，50 层后原始信号还在；</li><li><strong>LayerNorm</strong>=每层统一音量：防止数值爆炸，深层用 <strong>Pre-LN</strong>（先归一化）更稳。</li></ul>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、参数量心算</h3>"
+},
+{
+"type": "html",
+"html": "<p>$$\text{Params} \\approx N \\times (4d_{model}^2 + 2\\,d_{model}d_{ff})$$</p>\n<p>堆层数不是免费的：每层约 $4d^2$（注意力）$+2d\\cdot d_{ff}$（FFN）。d_model=1024、d_ff=4096 时每层约 12M 参数。<strong>先加宽还是加深要算账</strong>——这就是\"缩放定律\"的账本。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、时序模型怎么用这块积木</h3>"
+},
+{
+"type": "html",
+"html": "<p>PatchTST 把 96 个时间点切成 Patch（如每 16 步一块）当作\"词\"，堆 Transformer 块做预测；Informer 用稀疏注意力把 $O(n^2)$ 降下来。它们和你手机里的大模型共享同一块积木——<strong>看懂一块，看懂全部</strong>。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"残差连接（梯度高速回传）",
+"Pre-LN（先归一化）",
+"多头注意力（多子空间并行）",
+"去掉所有激活函数"
+],
+"id": "lsn-transformer-block-1",
+"type": "multi",
+"difficulty": 2,
+"library": "model",
+"topic": "Transformer 块：一切 LLM 的积木",
+"stem": "深层 Transformer 训练稳定的关键因素包括？",
+"answer": "A,B,C",
+"explain": "残差防梯度消失、Pre-LN 防数值爆炸、多头提升表达能力；激活函数是 FFN 的非线性来源，不能去。",
+"source": "Transformer块 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>积木公式：<strong>LN → MHA → 残差 → LN → FFN → 残差</strong>，堆 N 层。</li><li>心算参数：每层 ≈ $4d^2 + 2d\\cdot d_{ff}$，d_ff 常取 4d。</li><li>下一步：读概念卡《Transformer块》《位置编码》；刷题库 Transformer 一组；预告下一节《ARIMA 定阶实战》走回经典路线。</li></ul>"
+}
+]
+},
+{
+"id": "vpp-six-revenues",
+"title": "虚拟电厂六本账，一本一本算清",
+"subtitle": "收益从哪来、成本在哪扣 · 源网荷储精读 ⑥",
+"library": "sghc",
+"minutes": 7,
+"hue": 45,
+"intro": "<blockquote>一句话：<strong>虚拟电厂把分散的电源/负荷/储能聚成一个主体，赚六类钱、扣三类成本</strong>。会算这六本账，才会判断一个 VPP 项目值不值得做。</blockquote>",
+"blocks": [
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">一、六类收益来源</h3>"
+},
+{
+"type": "anim",
+"name": "sixhub.svg",
+"svg": "<svg viewBox=\"0 0 360 240\" xmlns=\"http://www.w3.org/2000/svg\" class=\"lessonfig\">\n<style>\n.lbl{fill:#8fa1c0;font-size:9px;font-family:-apple-system,sans-serif}\n.lblb{fill:#e7eefc;font-size:10px;font-weight:700;font-family:-apple-system,sans-serif}\n.spoke{stroke:#3d558a;stroke-width:1.4}\n.node{fill:#131f38;stroke:#3d558a;stroke-width:1.3}\n.hub{fill:#0f2e2a;stroke:#2dd4bf;stroke-width:2}\n.c1{animation:c1 7s infinite}.c2{animation:c2 7s infinite}.c3{animation:c3 7s infinite}.c4{animation:c4 7s infinite}.c5{animation:c5 7s infinite}.c6{animation:c6 7s infinite}\n@keyframes c1{0%,10%{opacity:.35}16%,96%{opacity:1}100%{opacity:.35}}\n@keyframes c2{0%,24%{opacity:.35}30%,96%{opacity:1}100%{opacity:.35}}\n@keyframes c3{0%,38%{opacity:.35}44%,96%{opacity:1}100%{opacity:.35}}\n@keyframes c4{0%,52%{opacity:.35}58%,96%{opacity:1}100%{opacity:.35}}\n@keyframes c5{0%,66%{opacity:.35}72%,96%{opacity:1}100%{opacity:.35}}\n@keyframes c6{0%,80%{opacity:.35}86%,96%{opacity:1}100%{opacity:.35}}\n</style>\n<text x=\"10\" y=\"14\" class=\"lblb\">虚拟电厂 = 聚沙成塔：把六类分散收益聚到一个主体</text>\n<circle cx=\"180\" cy=\"122\" r=\"34\" class=\"hub\"/>\n<text x=\"180\" y=\"118\" class=\"lblb\" text-anchor=\"middle\" fill=\"#7ef0df\">虚拟电厂</text>\n<text x=\"180\" y=\"132\" class=\"lbl\" text-anchor=\"middle\">VPP 运营主体</text>\n<g class=\"c1\"><line x1=\"160\" y1=\"96\" x2=\"92\" y2=\"46\" class=\"spoke\"/><rect x=\"30\" y=\"24\" width=\"124\" height=\"26\" class=\"node\" rx=\"8\"/><text x=\"92\" y=\"41\" class=\"lblb\" text-anchor=\"middle\">① 需求响应收益</text></g>\n<g class=\"c2\"><line x1=\"180\" y1=\"88\" x2=\"180\" y2=\"40\" class=\"spoke\"/><rect x=\"122\" y=\"18\" width=\"116\" height=\"26\" class=\"node\" rx=\"8\"/><text x=\"180\" y=\"35\" class=\"lblb\" text-anchor=\"middle\">② 供电收入</text></g>\n<g class=\"c3\"><line x1=\"202\" y1=\"96\" x2=\"272\" y2=\"46\" class=\"spoke\"/><rect x=\"212\" y=\"24\" width=\"120\" height=\"26\" class=\"node\" rx=\"8\"/><text x=\"272\" y=\"41\" class=\"lblb\" text-anchor=\"middle\">③ 供热收入</text></g>\n<g class=\"c4\"><line x1=\"158\" y1=\"148\" x2=\"92\" y2=\"196\" class=\"spoke\"/><rect x=\"26\" y=\"192\" width=\"132\" height=\"26\" class=\"node\" rx=\"8\"/><text x=\"92\" y=\"209\" class=\"lblb\" text-anchor=\"middle\">④ 调峰辅助服务</text></g>\n<g class=\"c5\"><line x1=\"180\" y1=\"156\" x2=\"180\" y2=\"204\" class=\"spoke\"/><rect x=\"116\" y=\"200\" width=\"128\" height=\"26\" class=\"node\" rx=\"8\"/><text x=\"180\" y=\"217\" class=\"lblb\" text-anchor=\"middle\">⑤ 容量电价补贴</text></g>\n<g class=\"c6\"><line x1=\"202\" y1=\"148\" x2=\"272\" y2=\"196\" class=\"spoke\"/><rect x=\"210\" y=\"192\" width=\"126\" height=\"26\" class=\"node\" rx=\"8\"/><text x=\"273\" y=\"209\" class=\"lblb\" text-anchor=\"middle\">⑥ 峰谷价差</text></g>\n<text x=\"180\" y=\"238\" class=\"lbl\" text-anchor=\"middle\">净利润 = 六账合计 − 聚合成本 − 考核扣减</text>\n</svg>"
+},
+{
+"type": "html",
+"html": "<div class='tablewrap'><table><thead><tr><th>#</th><th>收益</th><th>计算逻辑</th><th>稳定性</th></tr></thead><tbody><tr><td>①</td><td>需求响应</td><td>响应次数 × 单次补贴</td><td>政策驱动</td></tr><tr><td>②</td><td>供电</td><td>上网电价 × 上网电量</td><td>市场波动</td></tr><tr><td>③</td><td>供热</td><td>供热单价 × 供热时长</td><td>季节稳定</td></tr><tr><td>④</td><td>调峰辅助服务</td><td>(申报−出清) × 时长 × 调峰价</td><td>规则驱动</td></tr><tr><td>⑤</td><td>容量电价补贴</td><td>铭牌 × 165 元/kW·年 × 系数</td><td>政策托底</td></tr><tr><td>⑥</td><td>峰谷价差</td><td>充放电量 × 价差 × 天数系数</td><td>市场波动</td></tr></tbody></table></div>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">二、成本别忘：聚合不是免费午餐</h3>"
+},
+{
+"type": "html",
+"html": "<p>净利润 = 六账合计 − <strong>聚合平台成本</strong>（通信/控制/运维）− <strong>考核扣减</strong>（响应不达标、可用率不足）。浙江 VPP 现状的教训就是：<strong>收益模式缺长效机制</strong>——补贴会退坡，市场化收益（②④⑥）才是长久之计。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">三、两部制补贴怎么读</h3>"
+},
+{
+"type": "html",
+"html": "<p>浙江模式：<strong>容量补贴（10,000 元/MW/年基础标准）补固定成本 + 电量补贴补实际响应</strong>。容量钱养\"待命\"，电量钱奖\"干活\"——这是把 VPP 从\"演习队\"变成\"常备军\"的关键设计。</p>"
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">四、课中测</h3>"
+},
+{
+"type": "quiz",
+"question": {
+"options": [
+"容量电价补贴（165 元/kW·年体系）",
+"峰谷价差套利",
+"供电收入",
+"供热收入"
+],
+"id": "lsn-vpp-six-revenues-1",
+"type": "choice",
+"difficulty": 2,
+"library": "sghc",
+"topic": "虚拟电厂六本账，一本一本算清",
+"stem": "虚拟电厂收益中，属于\"政策托底、最稳定\"的一本是？",
+"answer": "A",
+"explain": "容量补贴按铭牌容量×标准×考核系数发放，与现货价格脱钩；②③⑥都随市场波动。判断项目基本盘先看容量补贴。",
+"source": "虚拟电厂经济性模型 · 精讲课中测",
+"auto": false
+}
+},
+{
+"type": "html",
+"html": "<h3 class=\"lesson-h\">五、小结与下一步</h3>"
+},
+{
+"type": "html",
+"html": "<ul><li>六账：<strong>响应/供电/供热/调峰/容量/价差</strong>；三扣：聚合成本/考核/衰减。</li><li>浙江两部制补贴=容量补固定 + 电量奖响应。</li><li>下一步：读概念卡《虚拟电厂经济性模型》《调峰辅助服务费用计算》；刷题库「源网荷储」一组。</li></ul>"
+}
+]
+}
+]
+}

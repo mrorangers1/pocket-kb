@@ -1,0 +1,4435 @@
+{
+"version": 1,
+"questions": [
+{
+"options": [
+"这个决策能不能用连续变量近似（减少 0/1 与整数变量）",
+"数据够不够",
+"目标函数量纲",
+"求解器品牌"
+],
+"id": "o-001",
+"topic": "建模五要素",
+"type": "choice",
+"difficulty": 1,
+"stem": "优化建模五要素中，决策变量要先问自己的关键问题是？",
+"answer": "A",
+"explain": "五要素之首是决策变量：连续/0-1/整数/排列四类。0/1 与整数变量是求解难度的主要来源——10 台同型泵优先决策开几台而非 10 个 0/1。",
+"source": "优化问题五要素与建模模板",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"储能充放/网络流 是 LP",
+"经济调度（网损/跟踪偏差）是 QP",
+"机组组合/启停轮转 是 MILP",
+"水库调度/SOC 管理 是 DP",
+"所有问题都是 NLP"
+],
+"id": "o-002",
+"topic": "问题分类",
+"type": "multi",
+"difficulty": 2,
+"stem": "按函数形状分类，下列问题-类别对应正确的有？",
+"answer": "A,B,C,D",
+"explain": "看到 f 和约束的形状决定求解通道：LP 多项式时间可解极大；QP 要求 Q 半正定才凸；MILP 因整数变量 NP 难；DP 怕状态维度诅咒。",
+"source": "优化问题的一般形式与分类",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"Hessian 矩阵 Q 半正定",
+"Q 正定且对角",
+"变量全为整数",
+"目标函数是线性的"
+],
+"id": "o-003",
+"topic": "凸性",
+"type": "choice",
+"difficulty": 2,
+"stem": "QP 问题保证凸性（从而多项式时间可解）的条件是？",
+"answer": "A",
+"explain": "Q 半正定即凸 QP（局部最优=全局最优）；Q 不定就是非凸 NLP，只能求局部最优。",
+"source": "优化问题的一般形式与分类 · 凸性",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"不存在另一个解在所有目标上都不差且至少一个目标更好",
+"所有目标都最小的解",
+"成本最低的解",
+"磨损失最小的解"
+],
+"id": "o-004",
+"topic": "Pareto前沿",
+"type": "choice",
+"difficulty": 2,
+"stem": "Pareto 最优解的含义是？",
+"answer": "A",
+"explain": "现场问题几乎多目标（电费 vs 磨损 vs 安全）；Pareto 前沿上的每个点都是合理运营策略——管理工作是在前沿上选点，不是让优化器替你选。",
+"source": "多目标优化与Pareto前沿",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"ε-约束（min f1 且 f2≤ε，扫 ε）",
+"加权求和",
+"目标归一化",
+"字典序"
+],
+"id": "o-005",
+"topic": "多目标转单目标",
+"type": "choice",
+"difficulty": 3,
+"stem": "多目标转单目标时，能出非凸前沿、每个目标有明确预算的方法是？",
+"answer": "A",
+"explain": "加权求和简单但前沿非凸时扫不全且 λ 量纲麻烦；ε-约束用预算约束换非凸前沿的完整性。",
+"source": "多目标优化与Pareto前沿 · 三种转单目标",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"沿多面体的棱从一个顶点走到更优的邻点，直到没有更优邻点",
+"在可行域内随机采样",
+"把问题拆成子问题并行",
+"用神经网络逼近"
+],
+"id": "o-006",
+"topic": "LP与单纯形",
+"type": "choice",
+"difficulty": 2,
+"stem": "单纯形法的几何直觉是？",
+"answer": "A",
+"explain": "LP 可行域是多面体，最优解必在某个顶点；单纯形沿棱走顶点。实际复杂度接近线性（最坏指数）；内点法（Karmarkar）有多项式保证。",
+"source": "线性规划LP与单纯形法",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"影子价格——资源值多少钱",
+"更快的迭代",
+"整数解",
+"可视化"
+],
+"id": "o-007",
+"topic": "LP对偶",
+"type": "choice",
+"difficulty": 2,
+"stem": "LP 对偶理论最值钱的产出是？",
+"answer": "A",
+"explain": "对偶变量=影子价格：约束右端项增加 1 单位，最优值改善多少。商务翻译（灵敏度分析）全靠它。",
+"source": "线性规划LP与单纯形法 · 对偶理论",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"下界（LB）",
+"上界（UB）",
+"精确最优",
+"无可行解"
+],
+"id": "o-008",
+"topic": "分支定界",
+"type": "choice",
+"difficulty": 2,
+"stem": "整数规划分支定界中，LP 松弛的最优值对原 min 问题给出的是？",
+"answer": "A",
+"explain": "丢掉整数约束是放松，LP 最优值 ≤ 原问题最优值 = 下界；当前最好整数解 = 上界。LB 不小于 UB 或不可行即剪枝。",
+"source": "整数规划与分支定界",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"子问题 LP 不可行",
+"子问题 LP 目标值不小于当前最好整数解（UB）",
+"LP 解全为整数（找到候选，更新 UB）",
+"分支层级太深且时间到",
+"只要变量个数多就剪"
+],
+"id": "o-009",
+"topic": "分支定界",
+"type": "multi",
+"difficulty": 3,
+"stem": "分支定界的剪枝条件包括？",
+"answer": "A,B,C,D",
+"explain": "前三个是经典剪枝；D 是工程时间限制。B 的关键是不可能更好了才剪。",
+"source": "整数规划与分支定界 · 核心机制",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"主问题定整数（开停机 y），子问题定连续（出力 x，给定 y 后是 LP）",
+"主问题定连续，子问题定整数",
+"随机拆分",
+"按时间对半拆"
+],
+"id": "o-010",
+"topic": "分解算法",
+"type": "choice",
+"difficulty": 3,
+"stem": "Benders 分解的经典拆分是？",
+"answer": "A",
+"explain": "逻辑/整数在上、连续在下：主问题用可行性割（这个 y 至少要让子问题可行）+ 最优性割迭代收敛。",
+"source": "分解算法：Benders-DW-ADMM",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"问题规模太大（时段太多/区域太多/整数太多），且耦合只发生在少数变量上",
+"问题很小",
+"没有耦合变量",
+"只要 LP"
+],
+"id": "o-011",
+"topic": "分解动机",
+"type": "choice",
+"difficulty": 2,
+"stem": "什么时候该考虑分解算法？",
+"answer": "A",
+"explain": "分解=把耦合变量（联络线功率、启停计划、库存边界）提上来当主问题决策，各子问题独立求解。观察结构是前提。",
+"source": "分解算法 · 为什么分解",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"exp(-Δ/T)，温度越高越容易接受",
+"恒为 0",
+"恒为 1",
+"1/Δ²"
+],
+"id": "o-012",
+"topic": "模拟退火",
+"type": "choice",
+"difficulty": 2,
+"stem": "模拟退火接受劣解的概率是？",
+"answer": "A",
+"explain": "Δ=f(x 新)-f(x 旧) 大于 0 时以 exp(-Δ/T) 接受；降温 T 乘 α（常取 0.95–0.99）。高温乱窜跳出局部最优，低温逐渐有序。",
+"source": "模拟退火与禁忌搜索",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"禁忌表禁止回头路",
+"提高温度",
+"增大种群",
+"随机重启"
+],
+"id": "o-013",
+"topic": "禁忌搜索",
+"type": "choice",
+"difficulty": 2,
+"stem": "禁忌搜索 TS 强制探索新区域的机制是？",
+"answer": "A",
+"explain": "TS 靠禁忌表记录近期走过的解，禁止立即回头，逼搜索离开局部最优区域。与 SA 的概率接受是两种跳出思路。",
+"source": "模拟退火与禁忌搜索 · 双子星",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"评价（算目标+约束惩罚）",
+"选择（轮盘赌/锦标赛）",
+"交叉",
+"变异",
+"精英保留（最好 1-2 个直接进下一代）",
+"每代全部重新随机生成"
+],
+"id": "o-014",
+"topic": "遗传算法",
+"type": "multi",
+"difficulty": 2,
+"stem": "标准 GA 的迭代环节包括？",
+"answer": "A,B,C,D,E",
+"explain": "GA=维护一群解用选择-交叉-变异进化；精英保留防退化、变异防早熟。解是排列/选择结构（排程、路径）时的首选。",
+"source": "遗传算法与进化算法",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"NSGA-II",
+"单纯形法",
+"K-means",
+"A 星搜索"
+],
+"id": "o-015",
+"topic": "多目标GA",
+"type": "choice",
+"difficulty": 2,
+"stem": "多目标出 Pareto 前沿的进化算法主力是？",
+"answer": "A",
+"explain": "NSGA-II 用非支配排序+拥挤度维持前沿多样性，是进化算法家族出 Pareto 前沿的主力。",
+"source": "遗传算法与进化算法 · NSGA-II",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"个体经验 与 群体经验",
+"惯性与摩擦",
+"速度与加速度",
+"探索与温度"
+],
+"id": "o-016",
+"topic": "粒子群",
+"type": "choice",
+"difficulty": 2,
+"stem": "PSO 速度更新中 pbest 与 gbest 两项分别对应？",
+"answer": "A",
+"explain": "pbest=粒子自己历史最好位置，gbest=全群历史最好位置；w 是惯性权重。PSO 适合连续参数整定。",
+"source": "粒子群与蚁群算法 · PSO",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"O(1) 小于 O(log n) 小于 O(n) 小于 O(n log n) 小于 O(n²) 小于 O(2ⁿ) 小于 O(n!)",
+"O(n!) 小于 O(2ⁿ) 小于 O(n²)",
+"O(n) 小于 O(log n)",
+"全都一样快"
+],
+"id": "o-017",
+"topic": "复杂度",
+"type": "choice",
+"difficulty": 1,
+"stem": "常见复杂度从快到慢的排列是？",
+"answer": "A",
+"explain": "关心增长趋势：n 翻倍时 O(n²) 时间乘 4、O(2ⁿ) 平方。Big-O 忽略常数与低阶项。",
+"source": "算法复杂度与渐近分析",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"0/1 背包用 DP O(nW)；完全背包用 DP 顺推；多维背包用 MILP（NP 难加剧）",
+"全部用贪心",
+"全部用 LP",
+"全部用模拟退火"
+],
+"id": "o-018",
+"topic": "背包问题",
+"type": "choice",
+"difficulty": 2,
+"stem": "背包问题三个版本与对应解法是？",
+"answer": "A",
+"explain": "0/1：每项最多取一次（检修窗口选任务、储能选时段）；完全：无限取；多维：多容量约束。背包是整数规划最简单的形态。",
+"source": "背包问题与伪多项式时间",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"复杂度依赖于数值 W 的大小而非编码长度（log W），数值大时指数爆炸",
+"它是多项式",
+"它比 LP 慢",
+"它只能解小数"
+],
+"id": "o-019",
+"topic": "伪多项式",
+"type": "choice",
+"difficulty": 3,
+"stem": "背包 DP 的 O(nW) 为什么叫伪多项式时间？",
+"answer": "A",
+"explain": "伪多项式：输入数值（W=容量）按二进制编码只需 log W 位，O(nW) 对输入长度是指数。这是 NP 难问题的典型特征。",
+"source": "背包问题与伪多项式时间",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"UC 定每台机组每时段开不开（0/1），ED 定开着的机组各发多少（连续）",
+"UC 定出力，ED 定开停",
+"两者一样",
+"UC 只管新能源"
+],
+"id": "o-020",
+"topic": "UC与ED",
+"type": "choice",
+"difficulty": 2,
+"stem": "机组组合 UC 与经济调度 ED 的分工是？",
+"answer": "A",
+"explain": "UC：0/1 变量+最小开停机时间+爬坡+启停成本（NP 难、时序耦合）；ED：给定开机集后 min 煤耗成本（凸二次/分段线性）。电力优化的祖师爷问题。",
+"source": "机组组合UC与经济调度ED",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"x=今晚的开机计划（不可反悔），y_ω=明天各场景下的出力微调（补救）",
+"x 是出力，y 是开停",
+"两者都可反悔",
+"y 不依赖场景"
+],
+"id": "o-021",
+"topic": "随机优化",
+"type": "choice",
+"difficulty": 3,
+"stem": "两阶段随机规划中，第一阶段 x 与第二阶段 y_ω 的现场读法是？",
+"answer": "A",
+"explain": "先定不可反悔决策，再为每个不确定场景预备补救。惩罚计划跟不上变化的期望代价，计划自动变保守（多留备用）。",
+"source": "场景法与随机优化 · 两阶段",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"每 15min 用最新信息重解有限时域问题，只执行第一步",
+"一次解出全年计划",
+"只做事后复盘",
+"随机执行"
+],
+"id": "o-022",
+"topic": "MPC",
+"type": "choice",
+"difficulty": 2,
+"stem": "模型预测控制 MPC（滚动时域）的核心机制是？",
+"answer": "A",
+"explain": "解 0 到 H 时域，只执行第一段；状态更新后滚动。是 DP 的滚动截断实现。预测窗 H 要覆盖决策后果期：储能看 24h，UC 看 24–48h。",
+"source": "滚动时域与模型预测控制MPC",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"Gurobi：商业 MILP/QP 速度标杆，生产首选",
+"HiGHS：开源 MIT，近年最快开源 MILP",
+"OR-Tools CP-SAT：排程/路径/时间表之王",
+"CBC：老牌但已被 HiGHS 超越",
+"SCIP：MINLP 强",
+"CPLEX：老牌稳定企业存量多"
+],
+"id": "o-023",
+"topic": "求解器选型",
+"type": "multi",
+"difficulty": 2,
+"stem": "求解器选型（2026 视角）正确的有？",
+"answer": "A,B,C,D,E,F",
+"explain": "求解器按问题类型选，建模层（Pyomo/OR-Tools）与求解器解耦——换求解器不动模型。",
+"source": "求解器与建模工具选型",
+"library": "opt",
+"auto": false
+},
+{
+"options": [],
+"id": "o-024",
+"topic": "建模心法",
+"type": "short",
+"difficulty": 2,
+"stem": "拿到工业现场优化需求（如园区储能充放计划），你的建模步骤是什么？",
+"answer": "① 五要素：决策变量（充放功率/SOC，连续还是 0/1）、目标（电费+衰减-套利收益）、约束（SOC 边界/倍率/并网点）、参数（电价曲线/容量）、求解要求；\n② 看形状进通道：连续+线性是 LP；含 SOC 动态是多阶段/DP；要开停机是 MILP；\n③ 预测不准就加场景/滚动 MPC；\n④ 规模太大就分解（Benders/ADMM）或启发式兜底；\n⑤ 灵敏度分析翻译回商务语言。",
+"explain": "五要素起手、形状定通道、不确定性加场景、规模上分解——跳过五要素直接写代码是最大的坑。",
+"source": "优化问题五要素与建模模板 / 一般形式与分类",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"遗传算法（排列编码 + 选择-交叉-变异）",
+"单纯形法",
+"梯度下降",
+"二分查找"
+],
+"id": "o-025",
+"topic": "启发式选择",
+"type": "choice",
+"difficulty": 3,
+"stem": "解是排列/选择结构（如检修排序、Job Shop 排程）时，首选的元启发式是？",
+"answer": "A",
+"explain": "GA 天然适合排列/组合编码；连续参数调优用 PSO；路径构造用蚁群；单点改进用模拟退火/禁忌。按解的结构选算法。",
+"source": "遗传算法与进化算法 / 启发式最小实现手册",
+"library": "opt",
+"auto": false
+},
+{
+"options": [],
+"id": "o-026",
+"topic": "分解对比",
+"type": "short",
+"difficulty": 3,
+"stem": "说出 Benders 分解与 ADMM 的适用分工（哪个变量在上、怎么协调）。",
+"answer": "Benders：整数/逻辑变量在上（主问题定开停机），连续变量在下（子问题 LP），\n用可行性割+最优性割传话——适合 UC 这类整数+连续；\nADMM：耦合约束加进目标（增广拉格朗日），各区域/时段交替求解、对偶变量协调——适合多区域可分离结构。",
+"explain": "共同思想：耦合变量提上来，主问题定大局、子问题各管一摊、对偶信息来回传话。",
+"source": "分解算法：Benders-DW-ADMM",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"覆盖决策的后果期：储能 24h（一天价差），冷端 4-6h（水温惯性），UC 24-48h（启停后果）",
+"越长越好",
+"越短越好",
+"固定 1 小时"
+],
+"id": "o-027",
+"topic": "滚动闭环",
+"type": "choice",
+"difficulty": 2,
+"stem": "预测与优化闭环中，预测窗 H 设置的原则是？",
+"answer": "A",
+"explain": "H 太短看不到后果（储能看不到晚峰），太长预测不准白增变量。后果期由物理属性决定。",
+"source": "滚动时域与模型预测控制MPC · 预测窗",
+"library": "opt",
+"auto": false
+},
+{
+"options": [],
+"id": "o-028",
+"topic": "对偶应用",
+"type": "short",
+"difficulty": 3,
+"stem": "厂长问再增加 1MW 受电容量值多少钱，你用 LP 的什么产出回答？怎么算？",
+"answer": "用对偶变量（影子价格）：求解受电容量约束的对偶值 λ，\n答案约等于 λ 元/MW/时段 乘以 该容量可用时段数。\n前提：LP 最优、约束绑定（影子价格非零才有意义）；整数问题要先固定整数解再看松弛。",
+"explain": "影子价格=资源边际价值，是优化结果翻译成商务语言的桥梁（灵敏度分析）。",
+"source": "线性规划LP与单纯形法 · 对偶理论 / 灵敏度分析与商务翻译",
+"library": "opt",
+"auto": false
+},
+{
+"options": [
+"AGPL-3.0，国产（涛思数据）",
+"Apache-2.0，国外",
+"MIT，国产",
+"GPL-3.0，国产"
+],
+"id": "s-001",
+"topic": "时序数据库",
+"type": "choice",
+"difficulty": 1,
+"stem": "TDengine 的 License 与国产属性是？",
+"answer": "A",
+"explain": "TDengine：国产、C 语言、AGPL-3.0（商业使用需授权）、内置 TDgpt AI。注意 AGPL 与 Apache/MIT 的商用差异。",
+"source": "TDengine · TDengine",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Apache IoTDB",
+"InfluxDB 3 Core",
+"QuestDB",
+"TimescaleDB"
+],
+"id": "s-002",
+"topic": "时序数据库",
+"type": "choice",
+"difficulty": 2,
+"stem": "知识库收录的 5 个时序数据库中，国产 + Apache-2.0 的是？",
+"answer": "A",
+"explain": "IoTDB 国产 Apache-2.0（清华发起）；TDengine 国产但 AGPL；InfluxDB3/QuestDB Apache 但国外；TimescaleDB NOASSERTION。",
+"source": "21-时序数据库 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Apache IoTDB",
+"InfluxDB 3 Core",
+"QuestDB",
+"TDengine",
+"StarRocks"
+],
+"id": "s-003",
+"topic": "时序数据库",
+"type": "multi",
+"difficulty": 2,
+"stem": "下列哪些时序数据库可用于商业闭源产品内嵌（Apache-2.0 / MIT 类宽松协议）？",
+"answer": "A,B,C,E",
+"explain": "TDengine 是 AGPL——内嵌到商业产品需要授权，这是选型红线。协议审查是工业软件选型的第一步。",
+"source": "21-时序数据库 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [],
+"id": "s-004",
+"topic": "时序数据库",
+"type": "short",
+"difficulty": 2,
+"stem": "工业场景选时序数据库（TSDB）而不是普通关系库（如 MySQL）的理由是什么？",
+"answer": "① 写入模型：设备点高频时序写入（万级 tag、秒/毫秒级），TSDB 为追加写优化；\n② 存储压缩：按时间分区 + 列式/编码压缩，存储成本数量级下降（TDengine 主打点）；\n③ 查询模式：按时间范围 + 标签聚合的查询有专用索引与降采样；\n④ 生命周期：自动过期、降精度归档是标配。",
+"explain": "判据就一句：数据是不是「设备×时间」的高频追加流，查询是不是「时间窗+聚合」。是 → TSDB。",
+"source": "21-时序数据库 · MOC · 选型启发",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"MQTT 工业 IoT 事实标准的国产消息 broker",
+"Kafka 兼容的流平台",
+"时序数据库",
+"边缘计算框架"
+],
+"id": "s-005",
+"topic": "消息流",
+"type": "choice",
+"difficulty": 1,
+"stem": "EMQX 的定位是？",
+"answer": "A",
+"explain": "EMQX：EMQ（杭州）出品，工业 IoT MQTT 事实标准。注意它与 Redpanda/Kafka 的层级关系：MQTT 接设备，Kafka 系做持久流。",
+"source": "22-消息流 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Kafka 兼容 + C++ 高性能（无 JVM/ZK）",
+"比 Kafka 更便宜的商业版",
+"支持 MQTT 协议",
+"内置时序存储"
+],
+"id": "s-006",
+"topic": "消息流",
+"type": "choice",
+"difficulty": 2,
+"stem": "Redpanda 的核心卖点是？",
+"answer": "A",
+"explain": "Redpanda：Kafka 协议兼容、C++ 实现、去 ZooKeeper。典型链路：EMQX(MQTT) → Redpanda/Kafka → Flink。",
+"source": "22-消息流 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Apache Flink",
+"Apache Spark",
+"Apache Storm",
+"Kafka Streams"
+],
+"id": "s-007",
+"topic": "计算查询",
+"type": "choice",
+"difficulty": 1,
+"stem": "实时流计算领域的事实标准是？",
+"answer": "A",
+"explain": "Flink = 实时流计算事实标准（知识库标注 ⭐），事件时间 + 状态 exactly-once 语义是其护城河。",
+"source": "23-计算查询 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Apache Doris；StarRocks",
+"StarRocks；Apache Doris",
+"ClickHouse；Doris",
+"Druid；StarRocks"
+],
+"id": "s-008",
+"topic": "计算查询",
+"type": "choice",
+"difficulty": 2,
+"stem": "OLAP 分析库的「国产化首选」与「实时 OLAP 新标杆」分别是？",
+"answer": "A",
+"explain": "Doris = OLAP 国产化首选（Apache/百度背景）；StarRocks = 实时 OLAP 新标杆（鼎石）。两者都 Apache-2.0。",
+"source": "23-计算查询 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"FUXA（MIT 协议）",
+"OpenSCADA",
+"ScadaBR",
+"OpenMUC"
+],
+"id": "s-009",
+"topic": "开源SCADA",
+"type": "choice",
+"difficulty": 1,
+"stem": "知识库调研结论：唯一活跃的开源 Web SCADA 是？",
+"answer": "A",
+"explain": "FUXA：MIT 协议 + Node/Angular + 内置 Modbus/OPC UA，4.6k⭐。其余三个已停更/失效/待确认，不作为主选型。",
+"source": "30-SCADA与组态 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"GPL-3.0，仅用于测试，不集成进商业产品",
+"MIT，可随意集成",
+"Apache-2.0，可商用",
+"已停更勿用"
+],
+"id": "s-010",
+"topic": "开源SCADA",
+"type": "choice",
+"difficulty": 2,
+"stem": "OpenPLC 的正确使用姿势是？",
+"answer": "A",
+"explain": "OpenPLC 是开源 PLC 运行时，GPL-3.0：可用于协议仿真与测试，但集成进产品会传染开源义务。",
+"source": "30-SCADA与组态 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Grafana",
+"Kibana",
+"AntV X6",
+"Cesium"
+],
+"id": "s-011",
+"topic": "可视化",
+"type": "choice",
+"difficulty": 1,
+"stem": "监控仪表盘（Dashboard）领域的事实标准是？",
+"answer": "A",
+"explain": "Grafana = 监控仪表盘事实标准（74.5k⭐，AGPL）。注意 X6 是流程编排/拓扑编辑，Cesium 是 3D 数字孪生——场景不同。",
+"source": "32-工业可视化 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"AntV X6（MIT，蚂蚁开源）",
+"Mermaid",
+"Cesium",
+"Grafana"
+],
+"id": "s-012",
+"topic": "可视化",
+"type": "choice",
+"difficulty": 2,
+"stem": "要做「流程编排 / 拓扑图编辑器」，知识库推荐？",
+"answer": "A",
+"explain": "X6 = 图编辑引擎，MIT 可商用；Mermaid 是 Markdown 文本转静态图，不适合交互编辑；Cesium 管 3D 地理。",
+"source": "32-工业可视化 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"open62541（C）",
+"libmodbus",
+"Eclipse Paho",
+"Wireshark"
+],
+"id": "s-013",
+"topic": "工业协议",
+"type": "choice",
+"difficulty": 2,
+"stem": "开源世界里，OPC UA 服务端开发的常用库是？",
+"answer": "A",
+"explain": "open62541 = OPC UA 开源实现（C）；libmodbus 对应 Modbus；Paho 对应 MQTT；Wireshark 是抓包分析。",
+"source": "40-工业协议栈",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Modbus ↔ libmodbus",
+"MQTT ↔ Eclipse Paho",
+"OPC UA ↔ open62541",
+"IEC 61850 ↔ libiec61850",
+"DNP3 ↔ 开源生态薄弱（知识库标注）"
+],
+"id": "s-014",
+"topic": "工业协议",
+"type": "multi",
+"difficulty": 2,
+"stem": "电力/工控场景常见的协议与对应开源库，正确的有？",
+"answer": "A,B,C,D,E",
+"explain": "协议栈速查：Modbus/libmodbus、MQTT/Paho、OPC UA/open62541、61850/libiec61850；DNP3 开源生态薄弱，选型需谨慎。",
+"source": "40-工业协议栈",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Directus",
+"Appsmith",
+"Budibase",
+"ILLA Builder"
+],
+"id": "s-015",
+"topic": "低代码",
+"type": "choice",
+"difficulty": 2,
+"stem": "知识库收录的低代码/无代码平台中，属于「Headless 后端与数据中台」定位的是？",
+"answer": "A",
+"explain": "Directus = Headless 后端（数据即服务）；Appsmith/ToolJet = 内部工具构建；Budibase 偏 AI Agent 与自动化；Refine = React 元框架。",
+"source": "10-前端低代码 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [],
+"id": "s-016",
+"topic": "架构",
+"type": "short",
+"difficulty": 3,
+"stem": "画出/描述工业数据中台的典型数据链路（从设备到 API）。",
+"answer": "[设备/PLC] → EMQX(MQTT 接入) → Redpanda/Kafka(持久流)\n↓\n[接入层] → Flink(流处理/清洗) → TDengine 或 IoTDB(时序存储)\n↓                              ↓\n[API 网关] ← Directus(数据中台) ← Doris/StarRocks(OLAP 分析)",
+"explain": "四层：接入(MQTT) → 流(Kafka 系) → 存(TSDB) → 算与查(Flink + OLAP) → 服务(Headless API)。能画出这条链就掌握了数据中台骨架。",
+"source": "20-数据中台 · MOC · 4.1 工业数据中台典型架构",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"先信源与方法论定标准 → 抓 GitHub 元数据 → 读 README/文档 → 输出「核心定位/技术栈/可复用模块/启发」卡片",
+"直接 star 最多的就用",
+"只看官网宣传材料",
+"先写代码再补调研"
+],
+"id": "s-017",
+"topic": "方法论",
+"type": "choice",
+"difficulty": 2,
+"stem": "知识库调研开源项目的推荐动作顺序是？",
+"answer": "A",
+"explain": "「信源与方法论」先行是知识库的统一范式：定标准（License/活跃度/社区）→ 抓数 → 读原文 → 结构化卡片（每张笔记同构）。",
+"source": "70-信源与方法论",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Rust 重写 + Arrow + Parquet",
+"Java + Hadoop",
+"C + 自研文件",
+"Python + SQLite"
+],
+"id": "s-018",
+"topic": "时序数据库",
+"type": "choice",
+"difficulty": 2,
+"stem": "InfluxDB 3 的核心技术栈特征是？",
+"answer": "A",
+"explain": "InfluxDB 3：Rust 重写、Apache Arrow 内存格式、Parquet 持久化，走向监控生态（Prometheus 兼容）。",
+"source": "21-时序数据库 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"PostgreSQL 扩展",
+"独立 C 程序",
+"Rust 新写",
+"Java 重写 Influx"
+],
+"id": "s-019",
+"topic": "时序数据库",
+"type": "choice",
+"difficulty": 2,
+"stem": "TimescaleDB 的技术路线是？",
+"answer": "A",
+"explain": "TimescaleDB = PG 扩展（ hypertable ），SQL 生态完整但 License 为 NOASSERTION（Timescale License 混合），商用要审条款。",
+"source": "21-时序数据库 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"内置 TDgpt AI 能力",
+"压缩比高",
+"存算分离",
+"国产生态（华为云/阿里云）",
+"主语言 Java"
+],
+"id": "s-020",
+"topic": "时序数据库",
+"type": "multi",
+"difficulty": 3,
+"stem": "国产化时序库选型（TDengine vs IoTDB）时，TDengine 的独特优势是？",
+"answer": "A,B,C,D",
+"explain": "TDengine 优势=AI 内置+高压缩+云原生+国产生态；E 错（TDengine 主语言是 C，IoTDB 才是 Java）。注意 TDengine 是 AGPL。",
+"source": "21-时序数据库 · MOC · 深度对比",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Apache IoTDB（国产 + Apache-2.0）",
+"TDengine（AGPL）",
+"InfluxDB 3（国外）",
+"TimescaleDB（NOASSERTION）"
+],
+"id": "s-021",
+"topic": "时序数据库",
+"type": "choice",
+"difficulty": 3,
+"stem": "客户要求\"信创 + 可闭源商用内嵌\"的时序库，知识库的推荐是？",
+"answer": "A",
+"explain": "IoTDB 同时满足\"国产 + Apache-2.0 宽松协议\"；TDengine 技术强但 AGPL 内嵌需授权。License 红线先于技术对比。",
+"source": "21-时序数据库 · MOC · 3.1 国产化决策",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Erlang——天然高并发容错（电信级 VM）",
+"C——极致性能",
+"Java——生态丰富",
+"Go——部署简单"
+],
+"id": "s-022",
+"topic": "消息流",
+"type": "choice",
+"difficulty": 2,
+"stem": "EMQX 的实现语言及其带来的优势是？",
+"answer": "A",
+"explain": "EMQX 用 Erlang/OTP：actor 模型 + 软实时调度，支撑百万级连接；这也是它\"工业 MQTT 事实标准\"的底气。",
+"source": "EMQX · EMQX",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"MQTT 5.0 / 3.1.1 / 3.1",
+"MQTT-SN",
+"CoAP",
+"LwM2M",
+"MQTT over QUIC"
+],
+"id": "s-023",
+"topic": "消息流",
+"type": "multi",
+"difficulty": 2,
+"stem": "EMQX 支持的协议包括？",
+"answer": "A,B,C,D,E",
+"explain": "全选：EMQX 是 MQTT 平台但协议面很广；MQTT over QUIC 是低时延新特性。设备接入层选型要看协议覆盖。",
+"source": "EMQX · EMQX",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"EMQX 接设备（MQTT 协议适配），Kafka 系做持久化流缓冲，前后衔接",
+"两者互相替代",
+"EMQX 是 Kafka 的插件",
+"Kafka 用于连接 PLC"
+],
+"id": "s-024",
+"topic": "消息流",
+"type": "choice",
+"difficulty": 2,
+"stem": "工业链路中 EMQX 与 Kafka/Redpanda 的关系是？",
+"answer": "A",
+"explain": "分工：EMQX 在南向（设备侧）做协议接入，Kafka/Redpanda 在北向做持久流总线 → Flink 消费。不是替代关系。",
+"source": "20-数据中台 · MOC · 典型架构",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Modbus",
+"OPC UA",
+"MQTT",
+"Siemens S7",
+"IEC 61850"
+],
+"id": "s-025",
+"topic": "开源SCADA",
+"type": "multi",
+"difficulty": 2,
+"stem": "FUXA 内置支持的工业协议包括？",
+"answer": "A,B,C,D",
+"explain": "FUXA：Web SCADA，内置 Modbus/OPC UA/MQTT/S7 适配器；IEC 61850 不在其内置清单（要用 libiec61850 等另接）。",
+"source": "FUXA · FUXA",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"AntV X6（图编辑引擎，MIT 可商用）",
+"Mermaid（静态文本图）",
+"Cesium（3D 地球）",
+"Grafana（监控仪表盘）"
+],
+"id": "s-026",
+"topic": "可视化",
+"type": "choice",
+"difficulty": 2,
+"stem": "要做\"组态画面的交互式流程图/拓扑编辑\"，知识库推荐与理由？",
+"answer": "A",
+"explain": "X6 是图编辑引擎（节点/连线/画布交互），Mermaid 只能生成静态图，Grafana 是Dashboard 不是编辑器。",
+"source": "32-工业可视化 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"AGPL-3.0——内嵌需开源或买商业授权",
+"Apache-2.0——随意用",
+"MIT——随意用",
+"GPL-2.0"
+],
+"id": "s-027",
+"topic": "可视化",
+"type": "choice",
+"difficulty": 3,
+"stem": "Grafana 的 License 是？用于商业产品内嵌时需要注意？",
+"answer": "A",
+"explain": "Grafana AGPL：自用/内部监控没问题，集成进闭源商用产品需授权。这是\"能装来用\"和\"能卖\"的区别。",
+"source": "32-工业可视化 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Eclipse Milo（EPL-2.0）",
+"open62541（C 库）",
+"libmodbus",
+"Scapy"
+],
+"id": "s-028",
+"topic": "协议栈",
+"type": "choice",
+"difficulty": 2,
+"stem": "Java 技术栈做 OPC UA 服务端，知识库推荐？",
+"answer": "A",
+"explain": "Milo = Java 版 OPC UA SDK，EPL-2.0 商业友好；open62541 是 C 库（MPL-2.0）。按技术栈选。",
+"source": "40-工业协议栈 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"libmodbus：LGPL-2.1，动态链接可商用",
+"open62541：MPL-2.0，友好",
+"libiec61850：GPL-3.0，强传染需规避",
+"Eclipse Milo：EPL-2.0，友好",
+"Wireshark：GPL-2.0，工具自用没问题"
+],
+"id": "s-029",
+"topic": "协议栈",
+"type": "multi",
+"difficulty": 3,
+"stem": "关于协议库 License 与商用友好度，正确的有？",
+"answer": "A,B,C,D,E",
+"explain": "全选：LGPL 动态链接避传染、GPL 强传染（61850 库要慎用）、EPL/MPL 友好。协议选型第一步是 License 审查。",
+"source": "40-工业协议栈 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"开源生态薄弱（候选 mujave/iec104 等仍待续抓）",
+"生态丰富直接用",
+"完全没有开源实现",
+"已被 OPC UA 完全取代"
+],
+"id": "s-030",
+"topic": "协议栈",
+"type": "choice",
+"difficulty": 3,
+"stem": "电力远动 IEC 104 的开源生态状况（知识库口径）？",
+"answer": "A",
+"explain": "知识库标注 IEC104/DNP3 开源生态薄弱、待续抓——电力协议适配层这块要预留自研或商业授权预算。",
+"source": "40-工业协议栈 · MOC · 待续抓表",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"JumpServer（GPL-3.0，30.6k⭐）",
+"OpenSCADA",
+"ScadaBR",
+"Wireshark"
+],
+"id": "s-031",
+"topic": "安全运维",
+"type": "choice",
+"difficulty": 2,
+"stem": "国产堡垒机（运维审计）的事实标准是？",
+"answer": "A",
+"explain": "JumpServer = 国产堡垒机事实标准；GPL-3.0 自用部署无碍。工控安全合规审计常用。",
+"source": "40-工业协议栈 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Python 报文构造/分析之王（测试与攻击面评估）",
+"时序数据库",
+"SCADA 平台",
+"MQTT broker"
+],
+"id": "s-032",
+"topic": "协议分析",
+"type": "choice",
+"difficulty": 2,
+"stem": "Scapy 的定位是？",
+"answer": "A",
+"explain": "Scapy：Python 逐层构造报文，工控协议 fuzzing/测试利器；GPL-2.0 工具自用。",
+"source": "40-工业协议栈 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Refine：MIT + 元框架 + 任意 UI 库，白标无协议风险",
+"Appsmith：功能最全",
+"ToolJet：AI 最强",
+"ILLA：Apache-2.0"
+],
+"id": "s-033",
+"topic": "低代码",
+"type": "choice",
+"difficulty": 2,
+"stem": "知识库低代码选型的首选与核心理由是？",
+"answer": "A",
+"explain": "Refine 是 headless React 元框架（34.9k⭐），客户定制自由度最高、协议最安全；AI 能力 ToolJet/Directus 更强但协议弱。",
+"source": "10-前端低代码 · MOC · 决策表",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Appsmith（AGPL）",
+"ToolJet（AGPL）",
+"Refine（MIT）",
+"Directus（待确认）",
+"Budibase（待确认）"
+],
+"id": "s-034",
+"topic": "低代码",
+"type": "multi",
+"difficulty": 3,
+"stem": "低代码 5 选 1 决策中，商业友好度低的选项有？",
+"answer": "A,B",
+"explain": "Refine MIT 最安全；Appsmith/ToolJet AGPL 内嵌需授权；Directus/Budibase 协议待确认。低代码选型 License 优先于功能。",
+"source": "10-前端低代码 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"元框架只提供脚手架与数据流，UI 完全自定义；完整产品是固定 UI 的应用生成器",
+"元框架更重",
+"完整产品不能二开",
+"没有区别"
+],
+"id": "s-035",
+"topic": "低代码",
+"type": "choice",
+"difficulty": 3,
+"stem": "\"元框架\"（Refine）与\"完整产品\"（Appsmith 类）的本质区别是？",
+"answer": "A",
+"explain": "元框架=headless（无自带 UI，可白标）；完整产品=固定组件体系。客户定制化要求高 → 元框架。",
+"source": "10-前端低代码 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [],
+"id": "s-036",
+"topic": "架构",
+"type": "short",
+"difficulty": 3,
+"stem": "说出工业数据中台\"四层链路\"中每层的作用（接入/流/存储/服务）。",
+"answer": "接入层：EMQX（MQTT）把设备/PLC 数据接进来；\n流层：Redpanda/Kafka 持久缓冲，削峰填谷、多消费者复用；\n计算层：Flink 实时清洗/聚合/特征计算；\n存储层：TDengine/IoTDB 存时序明细，Doris/StarRocks 存 OLAP 分析宽表；\n服务层：Directus/自研 API 对外提供数据服务。",
+"explain": "\"接-流-算-存-服\"五字诀；每层都有事实标准组件，选型就是选生态位。",
+"source": "20-数据中台 · MOC · 4.1",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"写入模型与查询模型完全不同：TSDB 优化高频追加+时间窗聚合，OLAP 优化多维分析扫描",
+"为了多用几个组件",
+"TSDB 存不下",
+"历史遗留问题"
+],
+"id": "s-037",
+"topic": "架构",
+"type": "choice",
+"difficulty": 2,
+"stem": "为什么时序明细与分析查询要分开存储（TSDB + OLAP 各一份）？",
+"answer": "A",
+"explain": "TSDB（TDengine）管\"设备×时间\"的写入与原始查询；OLAP（Doris/StarRocks）管跨设备多维聚合分析。一个优化写、一个优化扫。",
+"source": "20-数据中台 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"可横向对比、可机器检索、可让 AI 直接参与选型推理",
+"美观",
+"增加工作量",
+"满足格式强迫"
+],
+"id": "s-038",
+"topic": "选型方法",
+"type": "choice",
+"difficulty": 2,
+"stem": "知识库每张项目卡片\"同构\"的字段设计价值是？",
+"answer": "A",
+"explain": "核心定位/技术栈/可复用模块/启发/链接五段式 → 多项目对比表自动生成、LLM 可做选型推理。结构先行是方法论红利。",
+"source": "70-信源与方法论",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"GitHub stars",
+"最后提交时间",
+"License",
+"主语言",
+"协议商业友好度",
+"官网截图好看与否"
+],
+"id": "s-039",
+"topic": "开源尽调",
+"type": "multi",
+"difficulty": 2,
+"stem": "评估一个开源工业软件项目是否\"真实活跃\"，知识库看哪些指标？",
+"answer": "A,B,C,D,E",
+"explain": "五指标法（数据来自 GitHub API 真实抓取）；颜值不算指标。OpenSCADA/ScadaBR 就是\"低星+停更\"被否的。",
+"source": "70-信源与方法论",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"已停更或失效（活性指标不过关）",
+"License 太贵",
+"功能太弱",
+"国产不支持"
+],
+"id": "s-040",
+"topic": "案例复盘",
+"type": "choice",
+"difficulty": 2,
+"stem": "OpenSCADA / ScadaBR / OpenMUC 三个项目被判\"不建议主选型\"的共同原因是？",
+"answer": "A",
+"explain": "一个停更 9 年、一个原仓失效、一个待确认——开源选型\"活性\"是第一否决项，功能再对口也不选死项目。",
+"source": "30-SCADA与组态 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"TDengine：自研高压缩存储；InfluxDB3：Parquet 列存（压缩比中）",
+"两者都用 Parquet",
+"两者都用 SQLite",
+"TDengine 用 Hadoop"
+],
+"id": "s-041",
+"topic": "竞品对比",
+"type": "choice",
+"difficulty": 3,
+"stem": "TDengine 与 InfluxDB 3 的存储技术路线差异是？",
+"answer": "A",
+"explain": "对比表：TDengine 压缩比高（自研）；InfluxDB3 走 Arrow/Parquet 开放生态（压缩比中）。压的是存储成本，选的是生态路线。",
+"source": "21-时序数据库 · MOC · 深度对比",
+"library": "soft",
+"auto": false
+},
+{
+"options": [],
+"id": "s-042",
+"topic": "协议栈",
+"type": "short",
+"difficulty": 3,
+"stem": "列出知识库协议栈速查表（协议 ↔ 开源库 ↔ License），至少 4 组。",
+"answer": "Modbus ↔ libmodbus（LGPL-2.1，动态链接可商用）；\nMQTT ↔ Eclipse Paho（NOASSERTION 待确认）；\nOPC UA ↔ open62541（MPL-2.0）/ Eclipse Milo（EPL-2.0，Java）；\nIEC 61850 ↔ libiec61850（GPL-3.0，强传染慎用）；\n报文分析 ↔ Scapy（GPL-2.0）/ Wireshark（GPL-2.0）。",
+"explain": "协议-库-License 三位一体背诵；61850 的 GPL 是电力项目最常见的坑。",
+"source": "40-工业协议栈 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"流计算：清洗、聚合、窗口计算、特征生成",
+"消息存储",
+"设备接入",
+"可视化展示"
+],
+"id": "s-043",
+"topic": "数据中台",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"Kafka → Flink → 时序库\"这条链里，Flink 承担的角色是？",
+"answer": "A",
+"explain": "Flink=实时流计算事实标准：事件时间语义+exactly-once，做数据清洗/聚合/补全再写下游存储。",
+"source": "Apache Flink / 20-数据中台 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"轻量高性能 + 无缝集成 Hadoop/Spark 生态",
+"只能单机运行",
+"是 PG 扩展",
+"Rust 重写"
+],
+"id": "s-044",
+"topic": "时序数据库",
+"type": "choice",
+"difficulty": 2,
+"stem": "Apache IoTDB 的生态位特征是？",
+"answer": "A",
+"explain": "IoTDB：清华发起 Apache 项目，Java 主导，Hadoop/Spark 生态友好——大数据平台型选它。",
+"source": "Apache IoTDB · IoTDB",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"零 GC Java + C++ 核心，列式存储 + 多层存储引擎（WAL→native→Parquet）",
+"纯 Python 实现",
+"单文件嵌入式",
+"只用磁盘顺序写"
+],
+"id": "s-045",
+"topic": "时序数据库",
+"type": "choice",
+"difficulty": 3,
+"stem": "QuestDB 的性能设计要点是？",
+"answer": "A",
+"explain": "QuestDB：zero-GC Java/C++、向量化执行、WAL→原生→对象存储 Parquet 三层；SQL 兼容最强是其卖点。",
+"source": "QuestDB · QuestDB",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"亚秒级 ad-hoc 分析，免反范式化，平均比同类快 3x",
+"只做批处理",
+"只能单机",
+"是时序库"
+],
+"id": "s-046",
+"topic": "OLAP",
+"type": "choice",
+"difficulty": 2,
+"stem": "StarRocks 的核心卖点是？",
+"answer": "A",
+"explain": "StarRocks：MPP 查询引擎，直接查询湖仓数据不用搬数据/反范式；鼎石开源（Apache-2.0），实时 OLAP 新标杆。",
+"source": "StarRocks · StarRocks",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"查询+可视化+告警+协作一体化（Panel 插件生态）",
+"只能画折线图",
+"必须配 InfluxDB",
+"没有告警"
+],
+"id": "s-047",
+"topic": "可视化",
+"type": "choice",
+"difficulty": 2,
+"stem": "Grafana 作为\"可观测性平台\"与纯画图库的区别是？",
+"answer": "A",
+"explain": "Grafana=query/visualize/alert/share 一体，多数据源；监控仪表盘事实标准。License AGPL 注意商用边界。",
+"source": "Grafana · Grafana",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"DAG 图",
+"ER 图",
+"流程图",
+"血缘（lineage）图",
+"3D 地球"
+],
+"id": "s-048",
+"topic": "可视化",
+"type": "multi",
+"difficulty": 2,
+"stem": "AntV X6 适合构建的应用类型包括？",
+"answer": "A,B,C,D",
+"explain": "X6=HTML/SVG 图编辑引擎，DAG/ER/流程/血缘开箱即用；3D 找 Cesium。国产（蚂蚁）+ MIT。",
+"source": "AntV X6 · AntV X6",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"NOASSERTION（仓库未标注）——商用前必须人工确认许可条款",
+"Apache-2.0 随意用",
+"MIT 随意用",
+"GPL 强传染"
+],
+"id": "s-049",
+"topic": "消息流",
+"type": "choice",
+"difficulty": 3,
+"stem": "EMQX 的 License 状态对商用意味着什么？",
+"answer": "A",
+"explain": "EMQX 仓库未声明标准 License → 默认保留所有权利，商用要去找官方商业版/授权。这是\"待确认\"风险的活教材。",
+"source": "EMQX · EMQX / 40-MOC 商业友好列",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"LGPL 允许通过动态链接方式调用而不传染闭源代码",
+"LGPL 与 MIT 等价",
+"因为没人管",
+"只要改一行代码就可以"
+],
+"id": "s-050",
+"topic": "协议栈",
+"type": "choice",
+"difficulty": 2,
+"stem": "动态链接使用 libmodbus（LGPL-2.1）为什么可以商用？",
+"answer": "A",
+"explain": "LGPL 的传染边界在\"修改库本身\"——动态链接调用不触发开源义务；静态链接则要提供可重链接目标文件。协议审查看链接方式。",
+"source": "40-工业协议栈 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [],
+"id": "s-051",
+"topic": "选型方法",
+"type": "short",
+"difficulty": 2,
+"stem": "写出知识库开源尽调的\"五指标\"，并说明为什么\"最后提交时间\"要单独看。",
+"answer": "五指标：stars、最后提交时间、License、主语言、协议商业友好度。\n最后提交时间单独看的原因：stars 会累积（老项目虚高），而\"最近是否活跃\"直接决定\n你提的 issue/PR 有没有人理、安全补丁跟不跟得上——OpenSCADA（停 9 年）就是活性否决的实例。",
+"explain": "活性 > 星数；星数是历史声望，活性是未来保障。",
+"source": "70-信源与方法论",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"ToolJet",
+"Refine",
+"ILLA",
+"AntV X6"
+],
+"id": "s-052",
+"topic": "低代码",
+"type": "choice",
+"difficulty": 2,
+"stem": "需要\"AI 应用生成 + Agent\"能力且能接受 AGPL 的低代码平台是？",
+"answer": "A",
+"explain": "ToolJet：AI 原生低代码 + Agent（AGPL）；Refine 无 AI 但 MIT 最安全。功能与协议二选一。",
+"source": "10-前端低代码 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"TSDB 管高频追加写 + 时间窗原始查询",
+"OLAP 管多维聚合 + ad-hoc 分析扫描",
+"两者互相替代",
+"TSDB 管报表",
+"OLAP 接设备"
+],
+"id": "s-053",
+"topic": "数据中台",
+"type": "multi",
+"difficulty": 3,
+"stem": "时序数据库与 OLAP 引擎的正确分工是？",
+"answer": "A,B",
+"explain": "一个优化写（TSDB），一个优化扫（OLAP）；混用场景就是\"写不动\"或\"查不快\"。",
+"source": "20-数据中台 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"Node + Angular Web SCADA，前端可视化组件可直接借鉴，MIT 可商用二开",
+"Erlang 高并发",
+"Java 企业版",
+"Rust 重写"
+],
+"id": "s-054",
+"topic": "SCADA",
+"type": "choice",
+"difficulty": 2,
+"stem": "FUXA 的技术栈与技术启发是？",
+"answer": "A",
+"explain": "FUXA：TypeScript/Node/Angular，前后端一体化，驱动模块（Modbus/OPC UA/S7）可借鉴——\"最容易二开\"的开源 SCADA。",
+"source": "FUXA · FUXA",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"3D 地球/数字孪生地理场景",
+"监控仪表盘",
+"流程图编排",
+"时序存储"
+],
+"id": "s-055",
+"topic": "可视化",
+"type": "choice",
+"difficulty": 3,
+"stem": "Cesium 在工业可视化中的定位是？",
+"answer": "A",
+"explain": "四件套分工：Grafana=Dashboard、X6=图编辑、Cesium=3D GIS/数字孪生、Mermaid=文本静态图。别选错场景。",
+"source": "32-工业可视化 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"IoTDB（时序存储）",
+"Redpanda/Kafka（流缓冲）",
+"Flink（流计算）",
+"Doris/StarRocks（OLAP，Apache-2.0）",
+"Grafana（AGPL，注意边界或买授权）"
+],
+"id": "s-056",
+"topic": "选型综合",
+"type": "multi",
+"difficulty": 3,
+"stem": "一个\"信创 + 可闭源商用\"的工业数据中台，知识库的组件组合可以是？",
+"answer": "A,B,C,D,E",
+"explain": "核心链路全 Apache-2.0；Grafana AGPL 可用作内部监控（网络交互对内不触发分发义务），对外商业产品要换或授权。",
+"source": "20/23/30 各 MOC 综合",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"部署运维大幅简化（无外部协调组件）",
+"性能下降",
+"协议不兼容 Kafka",
+"只能单机"
+],
+"id": "s-057",
+"topic": "消息流",
+"type": "choice",
+"difficulty": 2,
+"stem": "Redpanda 去掉 ZooKeeper 的意义是？",
+"answer": "A",
+"explain": "Redpanda：Kafka 协议兼容 + C++ 无 JVM 无 ZK → 运维成本显著降低；这也是它相对 Kafka 的主要卖点。",
+"source": "22-消息流 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [],
+"id": "s-058",
+"topic": "时序数据库",
+"type": "short",
+"difficulty": 3,
+"stem": "TDengine 的\"一张表一个设备\"建模思想解决了什么问题？",
+"answer": "把同设备的数据连续存放（而不是按列族切分），配合超级表做 schema 模板，\n写入变成顺序追加 + 块级压缩，查询按设备+时间段整段读取——\n这就是它\"高压缩比 + 高写入吞吐\"的来源；代价是跨设备关联分析弱（交给 OLAP）。",
+"explain": "\"一设备一表\"是理解 TDengine 设计的钥匙：为时序写读模式而牺牲通用关系模型。",
+"source": "TDengine · TDengine / 21-MOC 对比",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"服务 SCADA 协议适配层开发",
+"评估开源库商用可行性",
+"规避 GPL 传染风险",
+"为了收藏更多仓库"
+],
+"id": "s-059",
+"topic": "协议栈",
+"type": "multi",
+"difficulty": 2,
+"stem": "工业协议栈调研的\"目的\"是？",
+"answer": "A,B,C",
+"explain": "协议栈知识库定位明确：服务中控 SCADA 的协议适配层——选型结论要能落到\"用哪个库、注意什么协议风险\"。",
+"source": "40-工业协议栈 · MOC",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"面向数据库自动生成 API + 管理界面（数据即服务），而非拖页面生成应用",
+"只能画大屏",
+"只做流程引擎",
+"不能二开"
+],
+"id": "s-060",
+"topic": "低代码",
+"type": "choice",
+"difficulty": 3,
+"stem": "Directus 作为\"Headless 后端\"与传统低代码的区别是？",
+"answer": "A",
+"explain": "Directus=DB→REST/GraphQL+Vue3 Studio，做\"数据中台\"层；低代码前端（Refine）做应用层。两者可组合（Refine+Directus 二次开发路径）。",
+"source": "10-前端低代码 · MOC / 70-信源与方法论",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"开源组件可按\"接-流-算-存-服\"分层拼装，信创友好",
+"必须买商业套件",
+"开源组件不能用于生产",
+"只做数据展示就够了"
+],
+"id": "s-061",
+"topic": "数据中台",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"工业数据中台完整架构方案\"笔记的启示是？",
+"answer": "A",
+"explain": "分层拼装 + License 审查 + 活性把关 = 可落地的开源数据中台；商业套件买的是省心不是能力。",
+"source": "70-信源与方法论 / 工业数据中台完整架构方案",
+"library": "soft",
+"auto": false
+},
+{
+"options": [
+"S1 快、自动、直觉；S2 慢、费力、逻辑",
+"S1 负责语言、S2 负责视觉",
+"S1 是情绪脑且天生不可靠",
+"S2 随时在线且总是正确"
+],
+"id": "m-001",
+"topic": "双系统",
+"type": "choice",
+"difficulty": 1,
+"stem": "System 1 与 System 2 的核心区别是？",
+"answer": "A",
+"explain": "双进程理论：S1 快速并行无意识（识脸、2+2），S2 缓慢串行需努力（17×24）。S2 懒惰且会过度拟合，不是永远正确。",
+"source": "System1与System2",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"前额叶皮层 PFC",
+"前扣带回 ACC",
+"基底节",
+"杏仁核"
+],
+"id": "m-002",
+"topic": "双系统",
+"type": "choice",
+"difficulty": 2,
+"stem": "大脑中承担「冲突监控、发现不对劲」功能的结构是？（AI 混合架构中类似门控信号）",
+"answer": "B",
+"explain": "ACC 负责冲突监控（「这题不对劲」）；PFC 对应工作记忆/长上下文推理；基底节+多巴胺对应 RL 的 value 更新；杏仁核对应告警门控。",
+"source": "System1与System2 · 脑科学速览",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"1 倍左右",
+"2–2.5 倍",
+"5 倍",
+"10 倍"
+],
+"id": "m-003",
+"topic": "前景理论",
+"type": "choice",
+"difficulty": 1,
+"stem": "前景理论中，损失痛苦约为等额收益快乐的多少倍？",
+"answer": "B",
+"explain": "λ≈2.25：亏 1 万要赚 2 万才心理回本。这是处置效应（浮盈急落袋、浮亏死扛）的行为根源。",
+"source": "前景理论",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"损失区风险寻求、死扛赌反弹",
+"损失区风险厌恶、立即止损",
+"收益区风险寻求、追涨加仓",
+"行为与参考点无关"
+],
+"id": "m-004",
+"topic": "前景理论",
+"type": "choice",
+"difficulty": 2,
+"stem": "按前景理论，交易浮亏时人的典型行为倾向是？",
+"answer": "A",
+"explain": "同一人在收益区风险厌恶（见好就收）、损失区风险寻求（不愿兑现损失）——「两种面孔」是前景理论的关键结论。",
+"source": "前景理论",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"PACF p 阶后截尾、ACF 拖尾",
+"ACF p 阶后截尾、PACF 拖尾",
+"ACF 与 PACF 都截尾",
+"ACF 与 PACF 都拖尾"
+],
+"id": "m-005",
+"topic": "ACF/PACF",
+"type": "choice",
+"difficulty": 2,
+"stem": "用 ACF/PACF 给 AR(p) 模型定阶的判据是？",
+"answer": "A",
+"explain": "AR(p)：PACF p 阶截尾、ACF 拖尾；MA(q) 相反（ACF q 阶截尾）；ARMA 两者都拖尾。口诀「AR 看 P，MA 看 A」。",
+"source": "自相关ACF与偏自相关PACF",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"判定为长记忆 AR 模型直接拟合",
+"先对序列差分再重新看 ACF",
+"增加样本量重估",
+"换用 MA 模型"
+],
+"id": "m-006",
+"topic": "ACF/PACF",
+"type": "choice",
+"difficulty": 3,
+"stem": "ACF 呈极缓慢线性衰减时，首先应该做什么？",
+"answer": "B",
+"explain": "随机游走会让 ACF 给出「永远显著」的假象——非平稳序列必须先差分镇住，再谈定阶。",
+"source": "自相关ACF与偏自相关PACF",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"AR 阶数",
+"差分阶数",
+"MA 阶数",
+"季节周期"
+],
+"id": "m-007",
+"topic": "ARIMA",
+"type": "choice",
+"difficulty": 2,
+"stem": "ARIMA(p,d,q) 中 d 的含义是？",
+"answer": "B",
+"explain": "d = 差分阶数（I 的部分）；p 是 AR 阶数、q 是 MA 阶数。ARIMA = 先差分到平稳，再用 ARMA 两头夹。",
+"source": "ARIMA族",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"AIC",
+"BIC",
+"两者一样",
+"都不适用"
+],
+"id": "m-008",
+"topic": "ARIMA",
+"type": "choice",
+"difficulty": 2,
+"stem": "ARIMA 定阶时，AIC 与 BIC 哪个更不易过拟合？",
+"answer": "B",
+"explain": "BIC = −2lnL + k·ln n，惩罚项随样本量增长，比 AIC（2k）更不易过拟合；再用残差 Ljung–Box 检验收尾。",
+"source": "ARIMA族",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"季节项",
+"外生回归变量",
+"波动率建模",
+"多变量联合分布"
+],
+"id": "m-009",
+"topic": "ARIMA",
+"type": "choice",
+"difficulty": 2,
+"stem": "ARIMAX 相比 ARIMA 多出来的是？",
+"answer": "B",
+"explain": "ARIMAX 右端加外生项 Σβx（如 电价=f(负荷)）；季节项是 SARIMA 的 (P,D,Q)_m。",
+"source": "ARIMA族",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"记忆细胞 + 输入/遗忘/输出三个门控",
+"更深的网络层数",
+"卷积核局部连接",
+"层归一化"
+],
+"id": "m-010",
+"topic": "LSTM/GRU",
+"type": "choice",
+"difficulty": 2,
+"stem": "LSTM 通过什么机制解决普通 RNN 的梯度消失？",
+"answer": "A",
+"explain": "细胞状态 C_t 提供「高速公路」直连梯度流，三门控制记什么、忘什么、输出什么；h_t 是手头工作记忆。",
+"source": "LSTM与GRU",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"把遗忘门与输入门合成更新门，参数更少",
+"增加了输出门提升精度",
+"用卷积替代循环",
+"解决了并行训练问题"
+],
+"id": "m-011",
+"topic": "LSTM/GRU",
+"type": "choice",
+"difficulty": 2,
+"stem": "GRU 相对 LSTM 的主要特点是？",
+"answer": "A",
+"explain": "GRU = 更新门 z_t + 复位门 r_t，参数少约 1/4，效果常相当。LSTM/GRU 仍是逐时间步串行、训练慢，大批量并行应看 TCN 或时序 Transformer。",
+"source": "LSTM与GRU",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"默认堆 LSTM",
+"特征工程 + 树模型，更便宜更稳",
+"必须用 Transformer",
+"深度学习一律优于传统方法"
+],
+"id": "m-012",
+"topic": "LSTM/GRU",
+"type": "choice",
+"difficulty": 3,
+"stem": "对负荷/价格这类表格化时序预测，2024 年后的务实首选通常是？",
+"answer": "B",
+"explain": "误区纠正：表格特征+树模型在负荷/价格上更便宜更稳；LSTM 适合多序列联合建模（如 DeepAR）。没有「默认最优」结构。",
+"source": "LSTM与GRU · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"防止点积方差随维度增长导致 softmax 饱和、梯度消失",
+"让权重矩阵正交",
+"压缩数值到 [0",
+"1]",
+"加速矩阵乘法"
+],
+"id": "m-013",
+"topic": "注意力机制",
+"type": "choice",
+"difficulty": 1,
+"stem": "缩放点积注意力 softmax(QKᵀ/√d_k)V 中，除以 √d_k 的原因是？",
+"answer": "A",
+"explain": "点积方差随 d_k 线性增长，不除则 logits 过大、softmax 饱和、梯度消失。缩放是让 softmax 保持区分度的关键。",
+"source": "注意力机制",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"问题、书的索引标签、书的内容",
+"书的内容、问题、索引",
+"索引、内容、问题",
+"内容、问题、索引"
+],
+"id": "m-014",
+"topic": "注意力机制",
+"type": "choice",
+"difficulty": 2,
+"stem": "注意力机制「图书馆类比」中，Q、K、V 分别对应？",
+"answer": "A",
+"explain": "Q=你想问的问题，K=每本书的索引标签，V=书的内容；QKᵀ 算匹配分，softmax 成借阅权重，按权重加权 V。",
+"source": "注意力机制",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"QKV 是否同源：自注意力同源；交叉注意力 Q 来自解码器、K/V 来自编码器",
+"是否使用 softmax",
+"是否有多个头",
+"是否可并行"
+],
+"id": "m-015",
+"topic": "注意力机制",
+"type": "choice",
+"difficulty": 2,
+"stem": "自注意力与交叉注意力的区别在于？",
+"answer": "A",
+"explain": "自注意力 Q/K/V 来自同一序列；交叉注意力（如机器翻译解码）Q 来自解码器，K/V 来自编码器。",
+"source": "注意力机制",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"权重高 = 因果贡献大",
+"权重高不等于因果贡献大，二者相关性弱",
+"注意力完全没有解释价值",
+"多头注意力不存在此问题"
+],
+"id": "m-016",
+"topic": "注意力机制",
+"type": "choice",
+"difficulty": 3,
+"stem": "关于注意力权重的解释性，正确的说法是？",
+"answer": "B",
+"explain": "常见误区：注意力权重高不等于因果贡献大（大量研究证实相关性弱）。可作线索，不能当因果证据。",
+"source": "注意力机制 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"O(n)，无需处理",
+"O(n²)，需要稀疏/Patch 等技巧（时序 Transformer）",
+"O(n log n)，可直接用",
+"O(n³)，只能用于短序列"
+],
+"id": "m-017",
+"topic": "注意力机制",
+"type": "choice",
+"difficulty": 2,
+"stem": "vanilla 自注意力的序列复杂度是多少？面对 96×365 点的长序列应怎么办？",
+"answer": "B",
+"explain": "注意力矩阵 n×n → O(n²) 内存与计算；长序列要靠 PatchTST 的 Patch、Informer 的稀疏注意力等技巧。",
+"source": "注意力机制 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"能源效率提高反而可能增加总能源消耗",
+"能源价格总是趋向上涨",
+"节能技术必然减少能源开支",
+"能源需求与经济增长无关"
+],
+"id": "m-018",
+"topic": "Jevons悖论",
+"type": "choice",
+"difficulty": 1,
+"stem": "Jevons 悖论（杰文斯悖论）的核心内容是？",
+"answer": "A",
+"explain": "效率↑→单位成本↓→需求↑：省下的钱被再花到更多能耗上。1865 年 Jevons《煤炭问题》提出：蒸汽机效率提升后煤炭消耗不降反升。",
+"source": "Jevons悖论",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"能源服务需求弹性 ε_S > 1",
+"能源自身需求弹性 < 1",
+"供给弹性 > 1",
+"收入弹性为 0"
+],
+"id": "m-019",
+"topic": "Jevons悖论",
+"type": "choice",
+"difficulty": 2,
+"stem": "Jevons 悖论成立（回弹超过 100%）的弹性条件是？",
+"answer": "A",
+"explain": "服务需求弹性大于 1 时，效率提升带来的需求扩张吞掉全部节省，总能耗上升。回弹 0–100% 只是普通回弹效应，>100% 才是 Jevons。",
+"source": "Jevons悖论",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"只外推「效率提升→负荷下降」会系统性低估长期需求",
+"效率提升对预测没有影响",
+"长期预测应忽略需求侧",
+"必须用深度学习才能修正"
+],
+"id": "m-020",
+"topic": "Jevons悖论",
+"type": "choice",
+"difficulty": 3,
+"stem": "Jevons 悖论对负荷/价格长期预测的直接警示是？",
+"answer": "A",
+"explain": "建模落点：长期负荷预测要给 GDP/效率弹性项装上「需求侧反向弹簧」；政策评估设低/中/高 rebound 情景（30%/50%/100%+）。",
+"source": "Jevons悖论 · 与预测的关系",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"2017 年，1706.03762",
+"2019 年，1810.04805",
+"2020 年，2012.07436",
+"2016 年，1512.03385"
+],
+"id": "m-021",
+"topic": "论文地图",
+"type": "choice",
+"difficulty": 2,
+"stem": "Transformer 原始论文《Attention Is All You Need》的年份与 arXiv 号是？",
+"answer": "A",
+"explain": "Vaswani et al. 2017（arXiv 1706.03762）；BERT 是 1810.04805；Informer 是 2012.07436；ResNet 是 1512.03385。",
+"source": "97-论文索引",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"Informer（2021 AAAI）",
+"Autoformer（2021 NeurIPS）",
+"PatchTST（2023 ICLR）",
+"Temporal Fusion Transformers（2021 IJF）",
+"ResNet（2016 CVPR）"
+],
+"id": "m-022",
+"topic": "论文地图",
+"type": "multi",
+"difficulty": 3,
+"stem": "时序 Transformer 方向的经典论文包括？",
+"answer": "A,B,C,D",
+"explain": "四篇都是时序 Transformer 代表；ResNet 是 CV 残差学习（其残差思想影响了 Transformer 块）。",
+"source": "97-论文索引 · D 组",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"DLinear（Zeng et al.",
+"2023 AAAI）质疑 Transformers 在时序上是否有效",
+"N-BEATS（2020 ICLR）",
+"DeepAR（2020 IJF）",
+"TiDE（2023）"
+],
+"id": "m-023",
+"topic": "论文地图",
+"type": "choice",
+"difficulty": 3,
+"stem": "被知识库称为时序 Transformer「清醒剂」的论文是哪篇？",
+"answer": "A",
+"explain": "Zeng et al. 用简单线性模型 DLinear 打平/超越一批时序 Transformer——建模前先建 baseline，别为复杂而复杂。",
+"source": "97-论文索引 · C 组",
+"library": "model",
+"auto": false
+},
+{
+"options": [],
+"id": "m-024",
+"topic": "建模方法",
+"type": "short",
+"difficulty": 2,
+"stem": "接到一个时序预测任务（如日前电价预测），按顺序列出你的建模关键步骤。",
+"answer": "① 明确任务与粒度（目标、15min/小时/日、预测步长）；\n② 数据体检：平稳性→差分；ACF/PACF 看结构；查缺失/异常/节假日；\n③ 建 baseline：朴素法/移动平均/线性回归，必须先有可被击败的基准；\n④ 分层建模：先经典模型，再树模型，最后才深度学习；\n⑤ AIC/BIC + 滚动回测选模型，残差做 Ljung–Box 白噪声检验；\n⑥ 多口径误差指标（MAE/RMSE/MAPE/区间覆盖）+ 不确定性校准。",
+"explain": "核心心法：先诊断、再 baseline、由简入繁、滚动回测、残差检验。上来就堆深度学习是常见败因。",
+"source": "建模与认知知识库 · 方法论综合",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"要可检验的中间产物，而非直接要答案",
+"让 AI 直接给最终模型",
+"用 AI 替代数据清洗",
+"自动化超参搜索"
+],
+"id": "m-025",
+"topic": "建模方法",
+"type": "choice",
+"difficulty": 2,
+"stem": "让 AI「输出 ACF/PACF 图 + 各 lag 显著性表 + 建议 (p,q) 范围」属于什么策略？",
+"answer": "A",
+"explain": "「可检验的中间产物」是指挥 AI 的核心方法：要过程工件，便于人复核，而不是黑盒答案。",
+"source": "自相关ACF与偏自相关PACF · 数据/参数",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"置换不变——打乱顺序结果不变",
+"严格保持顺序",
+"自动学习顺序",
+"只认第一个元素"
+],
+"id": "m-026",
+"topic": "位置编码",
+"type": "choice",
+"difficulty": 2,
+"stem": "注意力机制本身对序列顺序的态度是？",
+"answer": "A",
+"explain": "注意力是\"全员互相打分\"，本身不分座次——必须显式注入位置编码模型才知道\"昨天在明天前面\"。这是位置编码存在的根本原因。",
+"source": "位置编码 · 一句话定义",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"需要大量数据学习参数",
+"无需学习",
+"可外推到更长序列",
+"相对距离可表示（线性组合）"
+],
+"id": "m-027",
+"topic": "位置编码",
+"type": "choice",
+"difficulty": 2,
+"stem": "原始 Transformer 正弦位置编码的优点不包括？",
+"answer": "A",
+"explain": "正弦 PE 是手写规则无需学习；可学习绝对位置（BERT 式）才需要参数。现代 LLM 几乎全走 RoPE/ALiBi。",
+"source": "位置编码 · 公式与变体",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"位置编码方案",
+"激活函数选择",
+"批大小",
+"优化器品牌"
+],
+"id": "m-028",
+"topic": "位置编码",
+"type": "choice",
+"difficulty": 3,
+"stem": "时序 Transformer 外推能力（预测比训练更长的窗口）主要取决于？",
+"answer": "A",
+"explain": "外推能力几乎由位置编码决定：RoPE 基频、ALiBi 线性惩罚都是为外推设计；新模型别再用正弦绝对 PE。",
+"source": "位置编码 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"多头注意力 + 前馈网络 FFN + 残差连接 + LayerNorm",
+"卷积 + 池化 + 全连接 + Softmax",
+"LSTM + 注意力 + 残差 + BN",
+"Embedding + 位置编码 + 输出层"
+],
+"id": "m-029",
+"topic": "Transformer块",
+"type": "choice",
+"difficulty": 2,
+"stem": "Transformer 块的四个组件是？",
+"answer": "A",
+"explain": "标准积木：MHA（多头会诊）+ FFN（逐位置消化车间）+ 残差（信息高架桥）+ LayerNorm（每层统一音量），可堆叠 N×。",
+"source": "Transformer块 · 一句话定义",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"让梯度有\"高速公路\"，每层只学增量",
+"增加非线性",
+"压缩参数",
+"替代注意力"
+],
+"id": "m-030",
+"topic": "Transformer块",
+"type": "choice",
+"difficulty": 3,
+"stem": "Transformer 中残差连接的作用是？",
+"answer": "A",
+"explain": "残差=给信息修高架桥，避免几十层后原始信号被搅没——也是 ResNet 的思想源头（1512.03385）。",
+"source": "Transformer块 · 大白话",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"用 Pre-LN（先归一化）更稳定",
+"用 Post-LN 更稳定",
+"两者完全等价",
+"深网络不需要 LayerNorm"
+],
+"id": "m-031",
+"topic": "Transformer块",
+"type": "choice",
+"difficulty": 3,
+"stem": "深网络（几十层）训练 Transformer 时，LayerNorm 的 Pre/Post 选择建议是？",
+"answer": "A",
+"explain": "Pre-LN：X+LN(MHA(X)) 的变体更利于深层训练；Post-LN 在浅层可用，深层容易梯度不稳。别忽略这个细节。",
+"source": "Transformer块 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"不同头学不同关系（如一个盯日周期、一个盯天气响应）",
+"加快计算速度",
+"减少参数量",
+"只是为了工程并行"
+],
+"id": "m-032",
+"topic": "Transformer块",
+"type": "choice",
+"difficulty": 2,
+"stem": "多头注意力中\"多头\"的价值是？",
+"answer": "A",
+"explain": "多头=多个专家同时会诊，各头可在不同表示子空间捕捉不同模式；num_heads 要整除 d_model。",
+"source": "Transformer块 · 大白话",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"趋势 / 季节 / 周期 / 不规则扰动",
+"均值 / 方差 / 最大值 / 最小值",
+"训练 / 验证 / 测试 / 预测",
+"自相关 / 偏自相关 / 谱密度 / 熵"
+],
+"id": "m-033",
+"topic": "时序分解",
+"type": "choice",
+"difficulty": 1,
+"stem": "时序分解把序列拆成哪四种成分？",
+"answer": "A",
+"explain": "T 长期走势、S 固定节拍（日/周/年）、C 非固定周期摆动（3-5 年）、I 随机碎末。先拆干净 T/S 再建模。",
+"source": "时序分解-趋势季节周期扰动",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"波动幅度是否随水平变化：不变用加法，放大用乘法",
+"数据量大小",
+"采样频率高低",
+"是否含缺失值"
+],
+"id": "m-034",
+"topic": "时序分解",
+"type": "choice",
+"difficulty": 2,
+"stem": "加法模型与乘法模型的选用依据是？",
+"answer": "A",
+"explain": "波动幅度不随水平变化 → y=T+S+C+I；随水平放大（价格翻倍波动也翻倍）→ y=T×S×C×I，乘法可取对数转加法；工业界常用 STL。",
+"source": "时序分解 · 公式",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"季节周期固定，周期不固定",
+"季节振幅大，周期振幅小",
+"季节可预测，周期不可预测",
+"没有区别"
+],
+"id": "m-035",
+"topic": "时序分解",
+"type": "choice",
+"difficulty": 2,
+"stem": "季节与周期的关键区别是？",
+"answer": "A",
+"explain": "季节=固定周期（24h/168h/1年）；周期=非固定摆动（3-5 年经济周期）。混用会把结构漏进残差。",
+"source": "时序分解 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"任意 k≠0 时自相关 ρ_k 显著",
+"均值为 0",
+"常数方差",
+"任意 k≠0 时 ρ_k=0"
+],
+"id": "m-036",
+"topic": "白噪声",
+"type": "choice",
+"difficulty": 2,
+"stem": "白噪声的定义特征不包括？",
+"answer": "A",
+"explain": "白噪声 ε_t~WN(0,σ²)：均值 0、常数方差、无自相关。ρ_k 显著说明还有结构没建完。",
+"source": "白噪声与随机游走",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"当前的 y_t",
+"历史均值",
+"线性外推趋势",
+"0"
+],
+"id": "m-037",
+"topic": "随机游走",
+"type": "choice",
+"difficulty": 2,
+"stem": "随机游走 y_t = y_{t−1}+ε_t 的 h 步最优预测是？",
+"answer": "A",
+"explain": "E[y_{t+h}]=y_t：醉汉走路的最佳预测就是他现在站的位置。方差随步数线性膨胀（Var=tσ²）→ 非平稳。",
+"source": "白噪声与随机游走 · 公式",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"检验残差是否为白噪声（模型是否把结构吃干净）",
+"检验均值是否为 0",
+"选择最优模型阶数",
+"检验正态性"
+],
+"id": "m-038",
+"topic": "模型诊断",
+"type": "choice",
+"difficulty": 2,
+"stem": "Ljung–Box 检验的作用是？",
+"answer": "A",
+"explain": "Q 统计量 ~ χ²；p<0.05 说明残差还有自相关——\"还有肉没啃干净\"。建模后必跑。",
+"source": "白噪声与随机游走 · 残差诊断",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"拟合的是历史结构，只有稳定的结构对未来有用",
+"模型太简单",
+"数据量不够",
+"优化器没收敛"
+],
+"id": "m-039",
+"topic": "可预测性",
+"type": "choice",
+"difficulty": 3,
+"stem": "\"拟合好 ≠ 可预测\"的原因？",
+"answer": "A",
+"explain": "对历史拟合优只能说明\"解释了过去\"；预测依赖结构的平稳延续性。呼应：非平稳先差分、预测前先问结构稳不稳。",
+"source": "白噪声与随机游走 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"混合整数线性规划 MILP",
+"线性规划 LP",
+"无约束优化",
+"图论最短路径"
+],
+"id": "m-040",
+"topic": "优化方法",
+"type": "choice",
+"difficulty": 2,
+"stem": "机组开停机（0/1）决策属于哪类优化问题？",
+"answer": "A",
+"explain": "开停机是 0/1 整数变量 → MILP（NP 难但 Gurobi/CPLEX/HiGHS 很强）；电力里经济调度是 QP、热电解耦机组组合是 MILP。",
+"source": "优化方法",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"跨时间决策：今天的决定会改变明天的选项",
+"静态资源分配",
+"图像分类",
+"聚类"
+],
+"id": "m-041",
+"topic": "优化方法",
+"type": "choice",
+"difficulty": 2,
+"stem": "动态规划（DP）解决的核心问题是？",
+"answer": "A",
+"explain": "Bellman 方程把多期决策拆成\"今天最优 + 未来价值\"——水库今天放水明天库存就少；DP 是把\"预测\"变成\"行动\"的桥梁。",
+"source": "优化方法 · 大白话",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"预测错了优化就激进——应改用场景/区间做随机或鲁棒优化",
+"计算太慢",
+"没有风险",
+"结果不可解释"
+],
+"id": "m-042",
+"topic": "优化方法",
+"type": "choice",
+"difficulty": 3,
+"stem": "把确定性预测直接喂给优化器的风险是？",
+"answer": "A",
+"explain": "确定性点预测隐含\"100% 确定\"的假设；要用不确定性量化的区间/场景做随机规划或鲁棒优化。",
+"source": "优化方法 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"报价曲线 → 分段 QP",
+"热电解耦 → 机组组合 MILP",
+"投资组合 → QP（Q 为协方差矩阵）",
+"资源配比 → LP",
+"所有问题都应先硬解 MILP 不设规模限制"
+],
+"id": "m-043",
+"topic": "优化方法",
+"type": "multi",
+"difficulty": 2,
+"stem": "下列优化问题与电力场景的对应，正确的有？",
+"answer": "A,B,C,D",
+"explain": "E 错：MILP 规模大了要先松弛/拉格朗日分解/启发式暖启动。场景-模型对应是建模基本功。",
+"source": "优化方法 · 数据/参数",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"可得性 / 代表性 / 锚定",
+"归纳 / 演绎 / 类比",
+"直觉 / 逻辑 / 经验",
+"乐观 / 悲观 / 中性"
+],
+"id": "m-044",
+"topic": "启发式与偏差",
+"type": "choice",
+"difficulty": 1,
+"stem": "Tversky & Kahneman 提出的三类经典启发式是？",
+"answer": "A",
+"explain": "可得性（想起来的容易程度→被近期事件绑架）、代表性（像不像→忽略基率）、锚定（先看到的数字粘住判断）。",
+"source": "启发式与偏差 · 名词解释",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"可得性偏差",
+"代表性偏差",
+"锚定",
+"过度自信"
+],
+"id": "m-045",
+"topic": "可得性偏差",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"刚看完飞机失事新闻就怕坐飞机\"属于哪种偏差？",
+"answer": "A",
+"explain": "用\"想起来的容易程度\"估概率 → 被近期/生动事件绑架。交易版：刚经历限电就高估缺电概率。",
+"source": "启发式与偏差",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"忽略基率（无视职业基数）",
+"样本太小",
+"逻辑错误",
+"数据过时"
+],
+"id": "m-046",
+"topic": "代表性偏差",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"温文尔雅爱读书的人更可能是图书管理员而非农民\"的错误在于？",
+"answer": "A",
+"explain": "代表性启发式用\"像不像\"代替概率，忘了农民基数远大于图书管理员——交易版：看形态像牛市就无视基率。",
+"source": "启发式与偏差",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"过度自信（80% 置信实际 55% 命中）",
+"确认偏误（只找支持自己仓位的信息）",
+"处置效应（过早止盈、死扛亏损）",
+"锚定（被开盘价/目标价牵着走）",
+"完全理性偏差"
+],
+"id": "m-047",
+"topic": "交易偏差",
+"type": "multi",
+"difficulty": 3,
+"stem": "交易场景特有的认知偏差包括？",
+"answer": "A,B,C,D",
+"explain": "四个全是交易员高发偏差；处置效应呼应前景理论（损失区风险寻求）。风控设计要针对这四点。",
+"source": "启发式与偏差 · 交易场景",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"知道了也不能当时免疫——要靠清单、双人复核、强制冷却期等结构",
+"读两本书就能免疫",
+"AI 模型天然免疫（模型从人类数据学习，会把偏差机器化）",
+"只有经验少的人才有偏差"
+],
+"id": "m-048",
+"topic": "偏差免疫",
+"type": "choice",
+"difficulty": 3,
+"stem": "关于认知偏差的\"免疫\"，正确的说法是？",
+"answer": "A",
+"explain": "偏差是自动的出厂设置，知识只让人\"事后能认出\"；且 Jev 类 System One 模型会把数据里的偏差机器化——训练数据要 debias。风控靠结构不靠自觉。",
+"source": "启发式与偏差 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [],
+"id": "m-049",
+"topic": "建模心法",
+"type": "short",
+"difficulty": 2,
+"stem": "为什么\"上来就堆深度学习\"是时序建模的败因？请给出替代路径。",
+"answer": "深度学习容易学到\"伪相关\"且不可解释；应走路径：\n① 数据体检（平稳/分解/ACF）→ ② 朴素 baseline → ③ 经典模型（ARIMA/指数平滑）\n→ ④ 特征工程+树模型 → ⑤ 深度学习（数据量与结构复杂度配得上时）→ ⑥ 滚动回测选优。",
+"explain": "由简入繁、层层有 baseline，才能知道每一步的增量价值在哪。",
+"source": "建模与认知知识库 · 方法论综合",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"要可检验的中间产物，而不是只看最终指标",
+"让 AI 猜答案",
+"增加工作量无意义",
+"替代人工建模"
+],
+"id": "m-050",
+"topic": "建模心法",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"让 AI 输出残差 ACF 图 + Ljung–Box p 值\"属于什么要求？",
+"answer": "A",
+"explain": "残差诊断是\"模型是否完工\"的硬证据；指挥 AI 要过程工件（图、表、p 值），不要黑盒结论。",
+"source": "白噪声与随机游走 · 数据/参数",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"时间特征（小时/星期/节假日）",
+"滞后特征（昨日同时/上周同时）",
+"滚动统计（7 日均值/滑动方差）",
+"天气特征（温度/湿度）",
+"随机数特征"
+],
+"id": "m-051",
+"topic": "时序特征",
+"type": "multi",
+"difficulty": 2,
+"stem": "电力负荷/电价预测的典型特征工程包括？",
+"answer": "A,B,C,D",
+"explain": "时序特征三板斧：时间戳、滞后、滚动窗口 + 外生天气；树模型吃这些特征通常很稳。随机特征没用。",
+"source": "时序分解 / 时序特征工程（知识库综合）",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"控制每步沿负梯度方向迈多大",
+"决定模型层数",
+"正则化强度",
+"批大小"
+],
+"id": "m-052",
+"topic": "梯度下降",
+"type": "choice",
+"difficulty": 1,
+"stem": "梯度下降中，学习率 η 的作用是？",
+"answer": "A",
+"explain": "梯度=最陡下坡方向，η=步长：太大摔下山（震荡发散），太小原地打转（收敛慢）。",
+"source": "微积分与优化",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"链式法则（逐层复合求导）",
+"贝叶斯定理",
+"傅里叶变换",
+"蒙特卡洛积分"
+],
+"id": "m-053",
+"topic": "反向传播",
+"type": "choice",
+"difficulty": 2,
+"stem": "神经网络反向传播的数学核心是？",
+"answer": "A",
+"explain": "dz/dx=dz/dy·dy/dx——损失对每层权重的梯度靠链式法则从输出层\"倒链\"回输入层。",
+"source": "微积分与优化 · 链式法则",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"局部最优 = 全局最优（LP/QP 的世界）",
+"计算最快",
+"不用调参",
+"一定线性"
+],
+"id": "m-054",
+"topic": "凸性",
+"type": "choice",
+"difficulty": 2,
+"stem": "凸优化\"美好\"在哪？",
+"answer": "A",
+"explain": "f 凸 ⇔ Hessian 半正定 → 任何局部最优即全局最优；深度网络高度非凸，这也是它难训练的原因之一。",
+"source": "微积分与优化 · 凸性",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"先验分布 与 似然（数据给定参数的概率）",
+"后验 与 先验",
+"损失 与 梯度",
+"均值 与 方差"
+],
+"id": "m-055",
+"topic": "概率统计",
+"type": "choice",
+"difficulty": 2,
+"stem": "贝叶斯公式 P(θ|D) ∝ P(D|θ)P(θ) 中，P(θ) 与 P(D|θ) 分别代表？",
+"answer": "A",
+"explain": "先验+数据=后验；卡尔曼滤波的\"预测+校正\"递归就是贝叶斯更新的工程版。",
+"source": "概率与统计 · 贝叶斯",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"选让\"已观测数据最可能\"出现的参数",
+"选让损失最大的参数",
+"选最复杂的模型",
+"选先验最强的参数"
+],
+"id": "m-056",
+"topic": "概率统计",
+"type": "choice",
+"difficulty": 2,
+"stem": "最大似然估计（MLE）的思想是？",
+"answer": "A",
+"explain": "θ̂=argmax ∏P(x_i|θ)；MSE 在正态假设下就是 MLE 的特例——损失函数的来历不是拍脑袋。",
+"source": "概率与统计 · MLE",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"模型越自信地错，罚得越狠",
+"错得越多罚得越轻",
+"只罚最后一类",
+"与置信度无关"
+],
+"id": "m-057",
+"topic": "信息论",
+"type": "choice",
+"difficulty": 2,
+"stem": "交叉熵损失\"惩罚逻辑\"是？",
+"answer": "A",
+"explain": "H(p,q)=−Σp·log q：真分布 p 下模型给正确类的概率 q 越小（且自信），−log q 爆炸。这就是交叉熵当分类损失的原因。",
+"source": "信息论 · 交叉熵",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"非对称：D_KL(p‖q) ≠ D_KL(q‖p)，方向用错结果完全不同",
+"对称距离",
+"可以为负",
+"与分布无关"
+],
+"id": "m-058",
+"topic": "信息论",
+"type": "choice",
+"difficulty": 3,
+"stem": "关于 KL 散度，正确的是？",
+"answer": "A",
+"explain": "KL 是两个分布的\"有向差异\"，≥0 但不对称；变分推断、知识蒸馏里方向各有含义，用反全错。",
+"source": "信息论 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"无趋势无季节（只要平\"水平\"）",
+"强趋势强季节",
+"高频金融 tick",
+"多变量协整"
+],
+"id": "m-059",
+"topic": "指数平滑",
+"type": "choice",
+"difficulty": 2,
+"stem": "简单指数平滑 SES 适用于什么序列？",
+"answer": "A",
+"explain": "SES≈\"记忆指数衰减的加权平均\"；有趋势加 Holt 第二参数，有季节再加 Winters 第三参数。",
+"source": "指数平滑 · 一句话定义",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"α=0.9 金鱼记忆（只看最新），α=0.1 念旧（很久才改印象）",
+"α 越大越平滑",
+"两者无差别",
+"α 必须等于 0.5"
+],
+"id": "m-060",
+"topic": "指数平滑",
+"type": "choice",
+"difficulty": 2,
+"stem": "α=0.9 与 α=0.1 的直觉差异是？",
+"answer": "A",
+"explain": "α 是\"新观测的权重\"：α→1 紧跟最新值，α→0 几乎不改口。参数用最小化一步预测误差自动优化，别手拍。",
+"source": "指数平滑 · 大白话",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"HW 是 ARIMA 的特例（有对应的状态空间/ARIMA 等价形）",
+"完全无关",
+"HW 是深度模型",
+"ARIMA 是 HW 的超集且严格更强"
+],
+"id": "m-061",
+"topic": "指数平滑",
+"type": "choice",
+"difficulty": 3,
+"stem": "Holt-Winters 与 ARIMA 的关系是？",
+"answer": "A",
+"explain": "SES≈ARIMA(0,1,1)、HW 有等价状态空间形式——经典模型内在统一；有序列有外生变量就转 ARIMAX 或树模型。",
+"source": "指数平滑 · 先修与后续",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"预测（状态外推）+ 更新（新观测校正）",
+"前向 + 反向传播",
+"训练 + 测试",
+"编码 + 解码"
+],
+"id": "m-062",
+"topic": "卡尔曼滤波",
+"type": "choice",
+"difficulty": 2,
+"stem": "卡尔曼滤波的两步递归是？",
+"answer": "A",
+"explain": "预测 x̂_{t|t-1}=F x̂_{t-1}；更新加卡尔曼增益 K 加权的新息。等外卖=预测骑手位置+每次刷新校正。",
+"source": "状态空间与卡尔曼滤波 · 两步",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"观测越可信（R 小）越信观测，预测越可信（P 小）越信预测",
+"永远是常数 0.5",
+"只信观测",
+"只信预测"
+],
+"id": "m-063",
+"topic": "卡尔曼滤波",
+"type": "choice",
+"difficulty": 3,
+"stem": "卡尔曼增益 K 的直觉是？",
+"answer": "A",
+"explain": "K=P Hᵀ(HPHᵀ+R)^{-1}：Q/R 比例决定跟踪快慢，是灵敏度最高的两个参数（EM/极大似然估计）。",
+"source": "状态空间与卡尔曼滤波 · 大白话",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"短期弹性小（0.1–0.3）< 长期（0.3–0.9+），因为长期可换设备/改工艺",
+"短期大于长期",
+"弹性恒为 0",
+"弹性恒为 1"
+],
+"id": "m-064",
+"topic": "能源弹性",
+"type": "choice",
+"difficulty": 2,
+"stem": "能源价格弹性的典型规律是？",
+"answer": "A",
+"explain": "短期来不及调整（车还得开），长期可换电车/改工艺 → 弹性更大。建模：短期弹性管报价博弈，长期管投资规划。",
+"source": "能源价格弹性",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"Agent 钻奖励函数空子刷高分而非真目标——奖励设计要业务专家把关并加约束",
+"奖励太高",
+"算法崩溃",
+"无法避免"
+],
+"id": "m-065",
+"topic": "强化学习",
+"type": "choice",
+"difficulty": 3,
+"stem": "RL 的\"奖励黑客化\"（reward hacking）指什么？电力交易里怎么防？",
+"answer": "A",
+"explain": "RL 会学\" cheapest way to game the metric\"：电力交易里可能学成钻规则漏洞。防御=奖励函数业务评审+风险惩罚项+合规约束硬编码+模拟环境长测。",
+"source": "强化学习 · 常见误区",
+"library": "model",
+"auto": false
+},
+{
+"options": [
+"电价低谷充电、高峰放电，赚价差",
+"一直充电等待补贴",
+"高价充电低价放电（需量管理）",
+"只参与调频获取补偿"
+],
+"id": "g-001",
+"topic": "储能套利",
+"type": "choice",
+"difficulty": 1,
+"stem": "储能现货套利的核心思路是？",
+"answer": "A",
+"explain": "核心思路一句话：低谷充、高峰放、赚价差。数据粒度 15 分钟（每天 96 个时段），用的是出清价格序列。",
+"source": "储能套利空间计算逻辑",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"15 分钟，96 点/天",
+"1 小时，24 点/天",
+"5 分钟，288 点/天",
+"30 分钟，48 点/天"
+],
+"id": "g-002",
+"topic": "储能套利",
+"type": "choice",
+"difficulty": 1,
+"stem": "储能套利测算采用的时间分辨率与每日点数是？",
+"answer": "A",
+"explain": "15 分钟分辨率、全天 96 个时段；输入 Excel 每 sheet 一天、每行一个 15 分钟时段、每列一个城市。",
+"source": "储能套利空间计算逻辑 · 数据格式",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"用电可以获得补贴，储能充电甚至可能倒拿钱",
+"数据错误应剔除",
+"表示系统崩溃停市",
+"仅表示补贴额度用完"
+],
+"id": "g-003",
+"topic": "储能套利",
+"type": "choice",
+"difficulty": 2,
+"stem": "现货市场中出现负电价（如约 −100 元/MWh）意味着什么？",
+"answer": "A",
+"explain": "新能源大发时段出清价可为负：此时充电不仅免电费还拿补贴——但模型里要正确处理负值，否则套利测算失真。",
+"source": "储能套利空间计算逻辑",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"经验式报价 → 量化模型驱动 → 智能一体化策略引擎",
+"智能引擎 → 量化模型 → 经验式",
+"经验式 → 智能引擎 → 量化模型",
+"三者无先后关系"
+],
+"id": "g-004",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 2,
+"stem": "报价策略演进路径的正确顺序是？",
+"answer": "A",
+"explain": "演进三阶段：经验式（单一难适应）→ 量化模型（均值-方差、CVaR）→ 智能一体化（RL + LLM + 博弈论）。",
+"source": "电力市场报价策略深度研究",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"交易机制升级（日滚动+24 时段）",
+"中长期合约功能转型为风险管理工具",
+"现货出清复杂性与博弈",
+"新能源大规模并网的波动性",
+"算法与算力成熟（RL/LLM）",
+"煤炭价格持续走低"
+],
+"id": "g-005",
+"topic": "报价策略",
+"type": "multi",
+"difficulty": 2,
+"stem": "报价策略演进的五大驱动因素包括？",
+"answer": "A,B,C,D,E",
+"explain": "五大驱动全部来自市场规则深化与技术成熟；煤价是成本端变量，不是策略演进的驱动主因。",
+"source": "电力市场报价策略深度研究 · 五大驱动",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [],
+"id": "g-006",
+"topic": "源网荷储",
+"type": "short",
+"difficulty": 2,
+"stem": "「源网荷储一体化」中四个字各指什么？一体化要解决什么问题？",
+"answer": "源=电源（新能源/火电）、网=电网、荷=负荷（用户）、储=储能；\n一体化：把四者作为一个整体协同调度，而不是各自为政。\n解决的问题：新能源波动性与负荷时序不匹配 → 通过储能充放 + 负荷柔性 + AI 调度协控，\n提升消纳、降低弃风弃光、优化现货收益与用能成本。",
+"explain": "一体化本质=「发-输-用-存」协同优化；AI 调度协控是当前平台化建设的主线。",
+"source": "源网荷储分布式能源站AI调度协控一体化",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"每天只充放一次 vs 允许多次充放轮换",
+"只测一天 vs 测多天",
+"只考虑充电成本 vs 只考虑放电收益",
+"单城市 vs 多城市"
+],
+"id": "g-007",
+"topic": "源网荷储",
+"type": "choice",
+"difficulty": 3,
+"stem": "现货价差套利测算中，「单循环模式」与「多循环模式」的区别是？",
+"answer": "A",
+"explain": "单循环 = 一天一充一放（默认 -c 1）；多循环允许多个充放窗口轮换，收益更高但受 SOC 与倍率约束。模型输出含充电/放电时段与均价。",
+"source": "储能套利空间计算逻辑 · 输出格式",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"电池 SOC（荷电状态）",
+"当日电价均值",
+"循环次数",
+"充放电功率"
+],
+"id": "g-008",
+"topic": "DP寻优",
+"type": "choice",
+"difficulty": 2,
+"stem": "储能充放 DP 寻优中，状态变量是什么？",
+"answer": "A",
+"explain": "DP 逐日 24 小时遍历，以 SOC 为状态量求最小电费充放调度；功率是决策变量，电价是外部输入。",
+"source": "储能充放DP寻优与46天遍历测算",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"1kV 以下不能向电网放电，只能低谷充电替代高峰购电",
+"必须参与现货市场报价",
+"每天必须满充满放两次",
+"只能光伏发电自用"
+],
+"id": "g-009",
+"topic": "DP寻优",
+"type": "choice",
+"difficulty": 2,
+"stem": "铁塔基站储能\"自用模式\"的核心约束是？",
+"answer": "A",
+"explain": "自用模式=不反送电网，套利逻辑是\"低谷充电、高峰少买电网的电\"；典型参数 35kWh / 0.2C（7kW）/ 循环效率 90%。",
+"source": "储能充放DP寻优与46天遍历测算 · 问题设定",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"不调策略（直接购电）",
+"固定 2 循环策略",
+"随机充放策略",
+"全部充满再放空策略"
+],
+"id": "g-010",
+"topic": "DP寻优",
+"type": "multi",
+"difficulty": 3,
+"stem": "DP 寻优测算中，与\"DP 最优策略\"对比的基准策略有哪些？",
+"answer": "A,B",
+"explain": "方法论：DP 最优 vs 不调 vs 固定 2 循环两个基准对比，才能量化\"智能调度\"的增量收益。",
+"source": "储能充放DP寻优与46天遍历测算 · 方法",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"修正月度均价与实际曲线的偏差",
+"提高循环效率",
+"增加电池容量",
+"转换电价单位"
+],
+"id": "g-011",
+"topic": "DP寻优",
+"type": "choice",
+"difficulty": 3,
+"stem": "DP 测算中\"修正系数\"的作用是什么？",
+"answer": "A",
+"explain": "月度均价 vs 实际逐时曲线的偏差用修正系数校准——均价测算会掩盖日内峰谷结构，必须修正。",
+"source": "储能充放DP寻优与46天遍历测算",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"中控技术；2025.04.02 初版 / 2025.08.30 更新",
+"国家电网；2024 年",
+"华为；2025 初",
+"阿里；2026 年"
+],
+"id": "g-012",
+"topic": "VPP平台",
+"type": "choice",
+"difficulty": 2,
+"stem": "绿枢低碳虚拟电厂平台的建设主体与版本时间是？",
+"answer": "A",
+"explain": "中控\"绿枢低碳\"建议书两个版本；业务方向=垃圾发电 + 后期接入光伏/风电/储能，目标形态综合能源工业园。",
+"source": "绿枢低碳虚拟电厂平台建议书",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"两部制：容量补贴 + 电量补贴",
+"单一电量补贴",
+"按投资额一次性补贴",
+"只有绿证收益"
+],
+"id": "g-013",
+"topic": "VPP平台",
+"type": "choice",
+"difficulty": 2,
+"stem": "浙江虚拟电厂补贴采用的模式是？",
+"answer": "A",
+"explain": "两部制补贴：容量补贴（10,000 元/MW/年基础标准）+ 电量补贴——容量补偿固定成本、电量补贴激励实际响应。",
+"source": "30-浙江·MOC / 绿枢建议书",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"源-网协调 / 荷-储协调两类协调",
+"两个市场（中长期+现货）",
+"双碳目标",
+"源-储两个设备层"
+],
+"id": "g-014",
+"topic": "源网荷储架构",
+"type": "choice",
+"difficulty": 2,
+"stem": "源网荷储 AI 调度协控平台的\"1+2+N\"架构中，\"2\"指的是？",
+"answer": "A",
+"explain": "1 平台（AI 调度协控）+ 2 协调（源网/荷储）+ N 应用（分布式光伏/风电/储能/可调负荷）。",
+"source": "源网荷储分布式能源站AI调度协控一体化",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"9 类 Agent 编排",
+"时序预测",
+"优化调度",
+"群控 EMS",
+"数字孪生 / 半实物仿真",
+"代替人工审批"
+],
+"id": "g-015",
+"topic": "源网荷储架构",
+"type": "multi",
+"difficulty": 3,
+"stem": "源网荷储 AI 调度协控的核心能力包括？",
+"answer": "A,B,C,D,E",
+"explain": "核心=Agent 编排 + 预测 + 优化 + 群控 + 孪生仿真；AI 是协控助手不是审批者。",
+"source": "源网荷储分布式能源站AI调度协控一体化",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"35 kWh / 0.2C（7 kW）/ 循环效率 90%",
+"350 kWh / 1C / 95%",
+"3.5 MWh / 0.5C / 85%",
+"35 MWh / 0.2C / 90%"
+],
+"id": "g-016",
+"topic": "储能参数",
+"type": "choice",
+"difficulty": 2,
+"stem": "铁塔基站储能典型案例参数为？",
+"answer": "A",
+"explain": "35kWh 小容量 + 0.2C 小倍率是基站备电场景特征；0.2C 表示 5 小时充满（1/0.2）。",
+"source": "储能充放DP寻优与46天遍历测算 · 典型参数",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"5 小时充/放满（容量 ÷ 功率 = 5h）",
+"0.2 小时充满",
+"2 小时充满",
+"20% 的能量损耗"
+],
+"id": "g-017",
+"topic": "储能参数",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"0.2C\" 的充放电倍率意味着？",
+"answer": "A",
+"explain": "倍率 C = 功率/容量；0.2C → 充满时间 = 1/0.2 = 5 小时。基站小倍率长时充放。",
+"source": "储能充放DP寻优与46天遍历测算",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"皖发改价格〔2025〕302 号分时政策",
+"发改价格〔2021〕1439 号",
+"发改能源规〔2023〕1217 号",
+"皖发改价格函〔2025〕335 号"
+],
+"id": "g-018",
+"topic": "储能套利",
+"type": "choice",
+"difficulty": 3,
+"stem": "安徽 1-6 月零售用户分时到户电价被用于 DP 测算，电价政策依据是？",
+"answer": "A",
+"explain": "302 号=安徽分时电价政策（测算电价依据）；335 号=安徽容量电价配套。文号要对应到用途。",
+"source": "储能充放DP寻优与46天遍历测算 · 电价依据",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"报价精度要求从日级提升至时段级",
+"不再需要预测",
+"只报一口价即可",
+"现货市场被取代"
+],
+"id": "g-019",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 3,
+"stem": "中长期\"日滚动 + 24 时段\"机制实施后，对报价能力的核心改变是？",
+"answer": "A",
+"explain": "24 时段分时交易成为标准配置，报价、预测、复盘全部时段化——这是辅助决策系统的需求原点。",
+"source": "电力市场报价策略深度研究 · 五大驱动",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"多层次（中长期-现货联动）",
+"可解释",
+"能进化（自学习）",
+"风险偏好的自主动态调整",
+"完全黑箱不需要人工"
+],
+"id": "g-020",
+"topic": "报价策略",
+"type": "multi",
+"difficulty": 3,
+"stem": "智能一体化报价引擎的关键特征包括？",
+"answer": "A,B,C,D",
+"explain": "竞争关键是\"多层次、可解释、能进化\"的引擎 + 动态风险偏好；黑箱不可解释在交易场景过不了合规与信任关。",
+"source": "电力市场报价策略深度研究 · 竞争关键",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"出清算法与竞争对手行为",
+"成本与收入",
+"省内与省间",
+"发电与用电"
+],
+"id": "g-021",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 2,
+"stem": "现货报价需要在哪两者的互动中寻找均衡？",
+"answer": "A",
+"explain": "现货报价本质是博弈：摸清市场出清机制 + 对手行为模式 → 博弈论进入报价引擎。",
+"source": "电力市场报价策略深度研究",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [],
+"id": "g-022",
+"topic": "源网荷储",
+"type": "short",
+"difficulty": 2,
+"stem": "源网荷储一体化项目（如能源站）的\"源/网/荷/储\"在工商业场景下各自典型指什么？",
+"answer": "源：园区分布式光伏/风电（垃圾发电）；\n网：并网关口与内部配网（与电网的结算边界）；\n荷：园区可调负荷（空压机、空调、充电桩、产线）；\n储：储能电站（充放套利 + 需量管理 + 备用）。\n一体化的价值：协同调度使\"源随荷动\"变成\"源网荷储互动\"，吃现货价差 + 辅助服务补偿。",
+"explain": "先能指认四要素，再谈协同；储能是\"翻译器\"——把电能在时间维度上搬运。",
+"source": "源网荷储一体化综合笔记",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"大数据分析精度不足，缺乏分时段实测认证",
+"完全没有评估标准",
+"评估过于严格",
+"依赖人工上报即可"
+],
+"id": "g-023",
+"topic": "VPP平台",
+"type": "choice",
+"difficulty": 3,
+"stem": "浙江 VPP 可调能力评估机制的短板是？",
+"answer": "A",
+"explain": "三大瓶颈之二：可调能力评估缺分时段实测认证——平台建设的切入点就是\"评估+认证\"能力。",
+"source": "绿枢建议书 · 三大瓶颈",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"需量管理（降低基本电费）",
+"碳交易",
+"设备租赁",
+"政府奖励"
+],
+"id": "g-024",
+"topic": "储能收益",
+"type": "choice",
+"difficulty": 2,
+"stem": "储能电站参与电力市场的收益stack中，与\"峰谷套利\"并列的另一条主要现货收益路径是？",
+"answer": "A",
+"explain": "工商业储能收益=峰谷价差套利 + 需量/容量电费管理（削峰降需量）+ 需求响应 + 辅助服务；两条现货相关路径别漏。",
+"source": "虚拟电厂经济性模型 / 储能套利空间计算逻辑",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"充电按用户侧付电费，放电按发电侧获得电费",
+"只算一本放电账",
+"只算一本充电账",
+"充放都不结算"
+],
+"id": "g-025",
+"topic": "现货结算",
+"type": "choice",
+"difficulty": 3,
+"stem": "储能参与现货市场时，其充放电电量在结算上对应哪两本账？",
+"answer": "A",
+"explain": "储能具有\"用户+发电\"双重身份：充电=购电用户（付电价+可能的输配电费），放电=发电主体（收现货价）。身份切换是结算关键。",
+"source": "现货市场结算公式 + 储能套利空间计算逻辑",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [],
+"id": "g-026",
+"topic": "测算工具",
+"type": "short",
+"difficulty": 2,
+"stem": "储能套利测算工具的输入数据格式与输出结果各是什么？",
+"answer": "输入：Excel，每 sheet 一天、96 行（15 分钟点）、每列一个城市，值为出清电价（元/MWh，可为负）；\n输出：CSV，含日期/城市/充电时段/放电时段/充放均价/套利收益等列。",
+"explain": "记住\"96 行 × 多城市列\"的输入形态和\"窗口 + 均价\"的输出形态，工具链就能复现。",
+"source": "储能套利空间计算逻辑 · 数据格式",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"从单侧适应变成源网荷储双侧/多侧互动协同",
+"完全不需要电网",
+"储能取代所有电源",
+"只关注发电侧效率"
+],
+"id": "g-027",
+"topic": "一体化价值",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"源网荷储一体化\"相对\"源随荷动\"传统模式的本质变化是？",
+"answer": "A",
+"explain": "传统调度是\"源随荷动\"单边响应；一体化通过储能与柔性负荷把四要素变成可协同优化的系统，吃市场价差。",
+"source": "源网荷储分布式能源站AI调度协控一体化",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"调峰与调频",
+"输电服务",
+"计量服务",
+"电费结算"
+],
+"id": "g-028",
+"topic": "辅助服务",
+"type": "choice",
+"difficulty": 2,
+"stem": "储能可参与的辅助服务类型主要是？",
+"answer": "A",
+"explain": "调峰（深度调峰补偿）与调频（AGC 里程补偿）是储能辅助服务两大变现方向，对应 VPP 收益第 4 类。",
+"source": "调峰辅助服务费用计算 / 虚拟电厂经济性模型",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"尾部极端损失（小概率大亏）",
+"平均收益",
+"最大单笔盈利",
+"交易量上限"
+],
+"id": "g-029",
+"topic": "报价风险",
+"type": "choice",
+"difficulty": 3,
+"stem": "量化报价模型中 CVaR（条件风险价值）用于约束的是？",
+"answer": "A",
+"explain": "均值-方差管整体波动，CVaR 专门压尾部风险——\"宁愿放弃一点期望收益，也要限制极端行情下的亏损\"。",
+"source": "电力市场报价策略深度研究 · S1/S2 策略",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"SCUC（机组组合）+ SCED（经济调度）→ LMP",
+"线性回归 → 均价",
+"ARIMA → 负荷",
+"蒙特卡洛 → 风险"
+],
+"id": "g-030",
+"topic": "LMP",
+"type": "choice",
+"difficulty": 2,
+"stem": "出清反推策略（S4）预判价格的核心模型链是？",
+"answer": "A",
+"explain": "先 SCUC 定开停机、再 SCED 定出力 → 得节点边际电价 LMP；需要 DC-OPF/UC 求解器能力。技术门槛高于均值类策略。",
+"source": "电力市场报价策略深度研究 · S4",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"在收益奖励外约束激进仓位（风险调整后的收益最大化）",
+"提高报价",
+"替代状态空间",
+"加快训练"
+],
+"id": "g-031",
+"topic": "RL报价",
+"type": "choice",
+"difficulty": 3,
+"stem": "RL 报价奖励函数中\"风险惩罚项\"的作用是？",
+"answer": "A",
+"explain": "核心奖励=中标收益，辅助奖励=风险惩罚——防止 agent 学成\"赌行情\"。奖励设计是 RL 报价的灵魂。",
+"source": "电力市场报价策略深度研究 · S5 奖励函数",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"历史电价序列 / 负荷与新能源预测 / 对手报价特征 / 自身持仓",
+"只用当日均价",
+"只用煤价",
+"只用天气"
+],
+"id": "g-032",
+"topic": "RL报价",
+"type": "choice",
+"difficulty": 2,
+"stem": "RL 报价的状态空间通常包含？",
+"answer": "A",
+"explain": "状态=历史电价 + 负荷预测 + 新能源出力 + 竞争对手报价行为特征 + 自身持仓；动作=报价档位或报价系数。",
+"source": "电力市场报价策略深度研究 · S5 状态空间",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [],
+"id": "g-033",
+"topic": "策略同质化",
+"type": "short",
+"difficulty": 3,
+"stem": "为什么\"多数主体都用出清反推策略\"反而可能失效？并给一个缓解思路。",
+"answer": "原因：出清反推假设对手行为稳定/可预测；当多数主体用同类策略时，\n报价趋同 → 价格信号失真 → 反推的边际结构被破坏，策略互相\"榨干\"价差。\n缓解：① 差异化信息源（独有数据/预测精度）；② 博弈层（S6）显式建模对手；\n③ 风险约束（CVaR）避免拥挤交易；④ 策略组合与动态切换。",
+"explain": "市场策略有\"拥挤效应\"——有效策略被复制即失效，所以\"可进化的组合策略\"是长期护城河。",
+"source": "电力市场报价策略深度研究 · S4 同质化风险",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"取 n×106 组合",
+"必须换型号",
+"不再配置",
+"按 106 封顶截断"
+],
+"id": "g-034",
+"topic": "速查表参数",
+"type": "choice",
+"difficulty": 3,
+"stem": "速查表电池包档位设计中，超过 106 kWh 时如何配置？",
+"answer": "A",
+"explain": "电池包档位 18/35/43/53/70/106 kWh，超 106 取 n×106 组合——模块化堆叠思路，报价与配置时要知道这个口径。",
+"source": "储能收益Excel计算逻辑拆解",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"峰 1.00 / 平 0.71 / 谷 0.42",
+"峰 1.50 / 平 0.80 / 谷 0.30",
+"峰 0.90 / 平 0.60 / 谷 0.30",
+"峰 1.20 / 平 0.90 / 谷 0.50"
+],
+"id": "g-035",
+"topic": "分时电价",
+"type": "choice",
+"difficulty": 2,
+"stem": "河北南网速查表采用的分时电价（元/kWh）是？",
+"answer": "A",
+"explain": "峰 1.00/平 0.71/谷 0.42 → 峰谷价差 0.58 元/kWh，这是套利空间的基础盘；各地分时价差不同，测算先核价。",
+"source": "储能收益Excel计算逻辑拆解",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"两充两放 vs 一充一放（分季节执行）",
+"两个电池 vs 一个电池",
+"2 小时充 vs 1 小时充",
+"两种电价 vs 一种电价"
+],
+"id": "g-036",
+"topic": "充放策略",
+"type": "choice",
+"difficulty": 2,
+"stem": "速查表充放策略\"2C2D\"与\"1C1D\"对比的含义是？",
+"answer": "A",
+"explain": "2C2D=一天两充两放（捕捉双峰双谷），1C1D=一充一放；分时电价有午间低谷（光伏）的省份 2C2D 收益显著更高。",
+"source": "储能收益Excel计算逻辑拆解",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"时序预测 Agent",
+"优化调度 Agent",
+"群控 EMS",
+"数字孪生 / 半实物仿真",
+"代替交易员下单的无限自治 Agent"
+],
+"id": "g-037",
+"topic": "VPP平台",
+"type": "multi",
+"difficulty": 2,
+"stem": "绿枢方案中\"9 类 Agent 编排\"相关的平台核心模块包括？",
+"answer": "A,B,C,D",
+"explain": "平台=预测+优化+群控+孪生仿真四类核心；AI 是协控不是无限自治，人在环路保留审批。",
+"source": "源网荷储分布式能源站AI调度协控一体化",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"华润氢能源网荷储项目 + 中控 AI Agent 编排",
+"三峡水电站",
+"特高压直流工程",
+"居民户用光伏"
+],
+"id": "g-038",
+"topic": "一体化案例",
+"type": "choice",
+"difficulty": 2,
+"stem": "\"源网荷储分布式能源站 AI 调度协控一体化\"PPT 与哪个项目关联？",
+"answer": "A",
+"explain": "该素材与华润氢能（制氢方向正是源网荷储的延伸场景）+中控 AI Agent 编排关联——制氢负荷是\"荷\"侧的重要新增类型。",
+"source": "源网荷储分布式能源站AI调度协控一体化 · 关联",
+"library": "sghc",
+"auto": false
+},
+{
+"options": [
+"Σ(日前出清电量 × 日前出清电价)",
+"Σ(实际电量 × 实时电价)",
+"Σ(实际电量 − 合约电量) × 现货电价",
+"铭牌容量 × 容量电价 × 考核系数"
+],
+"id": "p-001",
+"topic": "现货结算",
+"type": "choice",
+"difficulty": 1,
+"stem": "日前现货电费的计算公式是？",
+"answer": "A",
+"explain": "日前电费按出清结果算账；B 是实时电费；C 是偏差电费；D 是容量电费。四本账别混。",
+"source": "现货市场结算公式",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"实际电量与合约电量的差按现货价格结算",
+"机组出力低于申报出力的罚款",
+"中长期合约与日前出清的差价",
+"辅助服务费用分摊"
+],
+"id": "p-002",
+"topic": "现货结算",
+"type": "choice",
+"difficulty": 1,
+"stem": "偏差电费的含义是？",
+"answer": "A",
+"explain": "偏差电费 = Σ(实际电量 − 合约电量) × 现货电价；正偏差按现货价支付，负偏差按现货价获得（负值）。",
+"source": "现货市场结算公式",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"中长期合约电费",
+"日前电费",
+"实时电费",
+"偏差电费",
+"辅助服务收入",
+"输配电费与政府性基金及附加"
+],
+"id": "p-003",
+"topic": "现货结算",
+"type": "multi",
+"difficulty": 2,
+"stem": "电力用户的综合电费包括以下哪些部分？",
+"answer": "A,B,C,D,E",
+"explain": "综合电费 = 中长期 + 日前 + 实时 + 偏差 + 辅助服务收入 − 输配电费 − 政府性基金及附加。注意 E 是「收入」为正，F 是减项。",
+"source": "现货市场结算公式",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"100 元/kW·年",
+"165 元/kW·年",
+"220 元/kW·年",
+"各省自行制定"
+],
+"id": "p-004",
+"topic": "容量电价",
+"type": "choice",
+"difficulty": 1,
+"stem": "全国统一煤电容量电价（2023 年起两部制）标准是多少？",
+"answer": "B",
+"explain": "165 元/kW·年，全国统一；安徽、江苏、山东等省 2026 配套细则均为这个数。",
+"source": "容量电价补偿计算公式 / 1439 号文",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"机组铭牌容量 × 容量电价 × 容量电费考核系数",
+"实际上网电量 × 容量电价",
+"机组铭牌容量 × 容量电价",
+"可用容量 × 现货均价 × 考核系数"
+],
+"id": "p-005",
+"topic": "容量电价",
+"type": "choice",
+"difficulty": 2,
+"stem": "煤电机组容量电费的计算公式是？",
+"answer": "A",
+"explain": "容量电费 = 铭牌容量 × 容量电价 × 考核系数；考核系数与机组可用率挂钩。",
+"source": "容量电价补偿计算公式",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"80%",
+"85%",
+"90%",
+"95%"
+],
+"id": "p-006",
+"topic": "容量电价",
+"type": "choice",
+"difficulty": 2,
+"stem": "按各省配套细则的通行规则，机组可用率达到多少可全额获得容量电费？",
+"answer": "C",
+"explain": "可用率 ≥90% 全额支付；低于 90% 按可用率比例扣减，非计划停运/出力受阻还要额外考核。",
+"source": "容量电价补偿计算公式",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"(日前申报出力 − 日前出清出力) × 时段时长 × 调峰电价",
+"实际发电量 × 调峰补偿单价",
+"出清电量 × (基准价 − 出清价)",
+"调峰深度 × 机组容量 × 固定系数"
+],
+"id": "p-007",
+"topic": "调峰辅助服务",
+"type": "choice",
+"difficulty": 2,
+"stem": "深度调峰交易费用的核心计算逻辑是？",
+"answer": "A",
+"explain": "F=(P_pre−P_clear)×Δt×λ：机组报高、市场出清压低的部分，按调峰电价补偿；实行日清月结。",
+"source": "调峰辅助服务费用计算",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"需求响应收益",
+"供电收入",
+"供热收入",
+"调峰辅助服务收入",
+"容量电价补贴收入",
+"峰谷电价差价",
+"碳排放权买卖"
+],
+"id": "p-008",
+"topic": "虚拟电厂",
+"type": "multi",
+"difficulty": 2,
+"stem": "虚拟电厂的六大收益来源包括？",
+"answer": "A,B,C,D,E,F",
+"explain": "六大收益：需求响应、供电、供热、调峰辅助服务、容量电价补贴、峰谷差价。碳交易不在此列（垃圾发电场景另有补贴口径）。",
+"source": "虚拟电厂经济性模型",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"发改能源规〔2023〕1217 号，2023-09-07",
+"发改价格〔2021〕1439 号，2021-10",
+"发改能源规〔2020〕889 号，2020-06",
+"发改价格〔2023〕1502 号，2023-12"
+],
+"id": "p-009",
+"topic": "国家政策",
+"type": "choice",
+"difficulty": 1,
+"stem": "国家层面首个《电力现货市场基本规则（试行）》的文号与印发时间？",
+"answer": "A",
+"explain": "1217 号是 2023-09-07 印发的现货基本规则（上位文件）；889 号是中长期交易规则；1439 号是煤电电价市场化文件。",
+"source": "2023-国家-电力现货市场基本规则",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"煤电上网电价市场化改革的核心文件",
+"电力现货市场基本规则",
+"可再生能源配额制文件",
+"输配电价改革文件"
+],
+"id": "p-010",
+"topic": "国家政策",
+"type": "choice",
+"difficulty": 2,
+"stem": "发改价格〔2021〕1439 号文的定位是？",
+"answer": "A",
+"explain": "1439 号《进一步深化燃煤发电上网电价市场化改革的通知》是煤电电价市场化核心文件，后续扩容为容量电价+辅助服务两部制。",
+"source": "发改价格〔2021〕1439 号",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"2024 年底",
+"2025 年底",
+"2026 年底",
+"2027 年底"
+],
+"id": "p-011",
+"topic": "国家政策",
+"type": "choice",
+"difficulty": 2,
+"stem": "两部门要求到哪一年底基本实现电力现货市场全覆盖？",
+"answer": "B",
+"explain": "公开报道：两部门要求 2025 年底前基本实现电力现货市场全覆盖。",
+"source": "2023-国家-电力现货市场基本规则",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"从锁定电量转向风险管理工具",
+"从计划分配转向自由协商",
+"从省内交易转向跨省交易",
+"从电量交易转向容量交易"
+],
+"id": "p-012",
+"topic": "市场结构",
+"type": "choice",
+"difficulty": 2,
+"stem": "电力市场交易体系的「中长期 + 现货」双轨中，中长期合约的核心功能正在从什么转向什么？",
+"answer": "A",
+"explain": "报价策略研究的核心判断：中长期合约从「锁定电量」转向「风险管理工具」，对冲与套利功能凸显，现货提收益。",
+"source": "电力市场报价策略深度研究",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"中长期 2 类 + 现货 2 类",
+"中长期 3 类 + 现货 3 类",
+"中长期 4 类 + 现货 2 类",
+"中长期 3 类 + 现货 4 类"
+],
+"id": "p-013",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 2,
+"stem": "主流电力报价策略体系是「中长期几类 + 现货几类」？",
+"answer": "B",
+"explain": "6 大主流策略：中长期 3 类（动态对冲滚动持仓、均值-方差、CVaR 风险约束）+ 现货 3 类 + 一体化融合框架。",
+"source": "电力市场报价策略深度研究",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"从月级提升到周级",
+"从日级提升到时段级",
+"从小时级提升到 15 分钟级",
+"从省级提升到节点级"
+],
+"id": "p-014",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 1,
+"stem": "中长期「日滚动 + 分时」机制把报价精度的要求从什么提升到什么？",
+"answer": "B",
+"explain": "交易机制升级：「日滚动 + 24 时段」实施后，报价精度要求从日级提升至时段级。",
+"source": "电力市场报价策略深度研究",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"1%~2%",
+"5%~7%",
+"15%~20%",
+"30% 以上"
+],
+"id": "p-015",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 2,
+"stem": "行业研究报告给出的强化学习智能报价收益提升量级是？",
+"answer": "B",
+"explain": "三个量化锚点之一：RL 智能报价收益提升约 5%~7%；另两个锚点是 24 时段与 6 大策略类。",
+"source": "电力市场报价策略深度研究",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"出清算法与竞争对手行为",
+"中长期持仓与现货仓位",
+"发电成本与边际收益",
+"省内供需与跨省外送"
+],
+"id": "p-016",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 3,
+"stem": "现货报价策略需要在哪两者之间寻找最优均衡？",
+"answer": "A",
+"explain": "现货复杂性提升：报价需在出清算法与竞争对手行为间找最优均衡，这是博弈论进入报价引擎的原因。",
+"source": "电力市场报价策略深度研究",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"187 元/MWh",
+"391.86 元/MWh",
+"453.51 元/MWh",
+"610 元/MWh"
+],
+"id": "p-017",
+"topic": "价格画像",
+"type": "choice",
+"difficulty": 2,
+"stem": "2024 年山东发电侧总结算均价约多少？",
+"answer": "C",
+"explain": "山东 453.51 元/MWh（供需偏紧+新能源占比提升）；甘肃 187 元/MWh（新能源装机过剩）；广东约 391.86 元/MWh。",
+"source": "2025-全国及重点省现货市场价格画像",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"山东",
+"山西",
+"广东",
+"江苏"
+],
+"id": "p-018",
+"topic": "价格画像",
+"type": "choice",
+"difficulty": 2,
+"stem": "2024 年现货市场交易电量全国第一、约 6100 亿千瓦时的省份是？",
+"answer": "C",
+"explain": "广东 2024 年现货交易电量约 6100 亿千瓦时，全国第一。",
+"source": "2025-全国及重点省现货市场价格画像",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"新能源装机过剩，供大于求",
+"煤电成本低廉",
+"外送通道受限导致省内压价",
+"政府定价干预"
+],
+"id": "p-019",
+"topic": "价格画像",
+"type": "choice",
+"difficulty": 2,
+"stem": "甘肃 2025 年 9 月日前市场平均价格约 187 元/MWh，价格偏低的主要原因是什么？",
+"answer": "A",
+"explain": "甘肃是新能源大省、装机过剩，价格画像低。分析省份价格要先看供需结构与电源结构。",
+"source": "2025-全国及重点省现货市场价格画像",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"湖北（正式运行）",
+"陕西（2025-01-01 连续结算）",
+"辽宁（2025-03-01 连续结算）",
+"青海（2025-10-28 连续试运行）",
+"江苏（尚未启动）",
+"浙江（尚未启动）"
+],
+"id": "p-020",
+"topic": "省份进展",
+"type": "multi",
+"difficulty": 3,
+"stem": "截至 2025-2026，下列哪些省份已进入现货连续结算试运行或正式运行阶段？",
+"answer": "A,B,C,D",
+"explain": "湖北已转正式运行；陕西、辽宁、重庆、青海等多省 2025 年起陆续连续结算/调电试运行；江苏、浙江也在推进但公开节点不同，注意时间锚。",
+"source": "30-各省份政策 · MOC",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"V3.2",
+"V10.0",
+"V15.0",
+"V20.0"
+],
+"id": "p-021",
+"topic": "省份规则",
+"type": "choice",
+"difficulty": 3,
+"stem": "山西电力现货市场实施细则已迭代到哪个版本（知识库收录口径）？",
+"answer": "C",
+"explain": "知识库收录《山西电力现货市场实施细则（V15.0）》；甘肃规则为 V3.2，江苏运营规则 V2.2。版本号反映规则迭代速度。",
+"source": "30-各省份政策",
+"library": "power",
+"auto": false
+},
+{
+"options": [],
+"id": "p-022",
+"topic": "信源方法",
+"type": "short",
+"difficulty": 2,
+"stem": "省级电力市场信息的权威信源有哪些类型？请至少举 3 类。",
+"answer": "① 官方渠道：国家发改委/能源局、省发改委与能源局、电力交易中心官网公告；\n② 市场运营机构披露：电网/交易中心月度信息披露报告、结算依据；\n③ 行业垂直媒体：北极星电力网、中国电力报等（用于追踪进展，数字需回溯官方源）。",
+"explain": "三级信源法：官方文件 > 运营披露 > 行业媒体；写报告时数字必须回溯到前两级。",
+"source": "电力交易员知识库权威信源清单",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"给每条政策/数据标生效时间与文号，便于回溯与比对迭代速度",
+"记录每天的工作日志",
+"给预测模型提供时间特征",
+"满足合规审计要求"
+],
+"id": "p-023",
+"topic": "信源方法",
+"type": "choice",
+"difficulty": 2,
+"stem": "电力交易员做「时间锚」记录的主要目的是什么？",
+"answer": "A",
+"explain": "知识库大量 frontmatter 带时间锚（如 /202309），用途是版本管理与规则演进追踪——山西 V15.0 这类迭代就是靠时间锚看出来的。",
+"source": "电力交易员知识库 · 方法论",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"风电与光伏",
+"燃煤机组",
+"燃气机组",
+"水电机组"
+],
+"id": "p-024",
+"topic": "机组成本",
+"type": "choice",
+"difficulty": 2,
+"stem": "按知识库计算公式总览，下列机组中边际成本近似为零的是？",
+"answer": "A",
+"explain": "风/光无燃料成本 → 边际成本≈0，所以现货 merit order 最左侧全是新能源；水电边际成本是水资源使用费，煤/气都要算燃料+排放。",
+"source": "电力市场计算公式总览 · 边际成本",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"煤耗 = 二次系数×出力² + 一次系数×出力，再乘煤价",
+"煤耗 = 固定成本 ÷ 出力",
+"煤耗 = 出力 × 煤价",
+"煤耗只与机组容量有关与出力无关"
+],
+"id": "p-025",
+"topic": "机组成本",
+"type": "choice",
+"difficulty": 3,
+"stem": "燃煤机组的煤耗成本如何计算？",
+"answer": "A",
+"explain": "煤耗是出力的二次函数（煤耗=二次系数×出力²+一次系数×出力），煤耗成本=煤耗×交易月燃煤价格。平均成本还要加固定成本/出力+空载成本/出力+排放成本。",
+"source": "电力市场计算公式总览 · 煤耗成本",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"中长期合约价格",
+"固定成本/出力",
+"空载成本/出力",
+"CO₂ 单位电量排放成本"
+],
+"id": "p-026",
+"topic": "机组成本",
+"type": "choice",
+"difficulty": 2,
+"stem": "燃煤机组平均成本（元/MWh）的构成不包括以下哪项？",
+"answer": "A",
+"explain": "平均成本=固定/出力+空载/出力+煤耗成本+CO₂与排污成本；中长期合约价格属于收入侧/结算侧，不进成本公式。",
+"source": "电力市场计算公式总览 · 平均成本",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"山西",
+"广东",
+"山东",
+"浙江"
+],
+"id": "p-027",
+"topic": "省份对比",
+"type": "choice",
+"difficulty": 2,
+"stem": "全国最早开展长周期现货结算、实施细则已迭代到 V15.0 的省份是？",
+"answer": "A",
+"explain": "山西 2017-2018 起按日结算，全国最早；V15.0 修订中，独立储能\"独挑大梁\"。广东则是全国首个常态化运行省级现货市场。",
+"source": "30-山西·MOC",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"广东",
+"山西",
+"山东",
+"蒙西"
+],
+"id": "p-028",
+"topic": "省份对比",
+"type": "choice",
+"difficulty": 2,
+"stem": "全国首个常态化运行的省级电力现货市场是？",
+"answer": "A",
+"explain": "广东含南方区域跨省市场，2024 年现货交易电量 6100 亿千瓦时全国第一；注意\"最早长周期结算\"（山西）≠\"首个常态化运行\"（广东）。",
+"source": "30-广东·MOC",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"2025-08 全面运行；分区边际电价机制",
+"2025-06 正式运行；统一边际电价",
+"2024 起常态化；节点电价",
+"2026-01 启动；政府定价"
+],
+"id": "p-029",
+"topic": "省份对比",
+"type": "choice",
+"difficulty": 2,
+"stem": "浙江现货市场全面运行的时间与定价机制是？",
+"answer": "A",
+"explain": "浙江 2025-08 全面运行现货，用分区边际电价解决省内阻塞；湖北才是 2025-06-06 正式运行。市场准入 60% 工商业用户。",
+"source": "30-浙江·MOC",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"山西：第六次连续结算，VPP 暂行办法 2024-09-18 实施",
+"湖北：2025-06-06 正式运行，华中枢纽水电大省",
+"山东：连续结算 17 个月，2024 均价 453.51 元/MWh",
+"甘肃：V3.2 规则，2025-09 日前均价 187 元/MWh",
+"蒙西：2025 预计交易规模 2900 亿千瓦时"
+],
+"id": "p-030",
+"topic": "省份对比",
+"type": "multi",
+"difficulty": 3,
+"stem": "关于省级现货市场状态，正确的有？",
+"answer": "A,B,C,D,E",
+"explain": "全部为知识库 MOC 收录口径；这组数字是交易员\"报菜名\"基本功，注意每个省要绑一个记忆锚。",
+"source": "30-各省份政策 · MOC 横向对比表",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"10",
+"000 元/MW/年",
+"165 元/kW·年",
+"1000 元/MW/年",
+"按度电 0.1 元补贴"
+],
+"id": "p-031",
+"topic": "省份对比",
+"type": "choice",
+"difficulty": 3,
+"stem": "浙江虚拟电厂容量补贴的基础标准是？",
+"answer": "A",
+"explain": "浙江 VPP 两部制补贴：容量补贴基础标准 10,000 元/MW/年 + 电量补贴；而 165 元/kW·年是煤电容量电价，两者别混。",
+"source": "30-浙江·MOC / 绿枢建议书",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"人 + 服务 + 数据\"（托管运营与线下实训营）",
+"纯算法技术优势",
+"低价策略",
+"政府关系"
+],
+"id": "p-032",
+"topic": "竞品调研",
+"type": "choice",
+"difficulty": 2,
+"stem": "竞品调研中，兰木达（Lambda）的护城河被判断为？",
+"answer": "A",
+"explain": "兰木达覆盖 29 省、服务电量破 2000 亿 kWh，\"度度赢\"实训营 23 期；判断其护城河是服务与数据，平台只是载体——对标时别只比功能表。",
+"source": "电力交易辅助决策系统竞品调研",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"市场分析预测 / 交易模拟出清 / 策略制定 / 复盘报告",
+"只做电力现货价格预测",
+"只做交易托管",
+"只做培训服务"
+],
+"id": "p-033",
+"topic": "竞品调研",
+"type": "choice",
+"difficulty": 2,
+"stem": "清能互联（清华系）产品的功能基线包括哪些？",
+"answer": "A",
+"explain": "清能互联功能分解：负荷/价格预测、竞价空间计算、模拟出清、策略制定、结果复盘、报告自动生成——可作为辅助决策系统的对标基线。",
+"source": "竞品调研 · 清能互联",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"中发〔2015〕9 号",
+"发改能源规〔2023〕1217 号",
+"发改价格〔2021〕1439 号",
+"发改能源〔2025〕357 号"
+],
+"id": "p-034",
+"topic": "政策时间线",
+"type": "choice",
+"difficulty": 2,
+"stem": "电力体制改革\"管住中间、放开两头\"的总体框架出自哪个文件？",
+"answer": "A",
+"explain": "9 号文（2015）是电改总框架；1217 号是现货基本规则；1439 号是煤电电价市场化；357 号是 2025 虚拟电厂指导意见。四个文号一条线。",
+"source": "绿枢建议书 · 政策环境表",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"发改能源〔2025〕357 号",
+"发改运行规〔2023〕1261 号",
+"发改运行规〔2023〕1283 号",
+"发改价格〔2023〕1502 号"
+],
+"id": "p-035",
+"topic": "虚拟电厂政策",
+"type": "choice",
+"difficulty": 2,
+"stem": "国家发改委《关于加快推进虚拟电厂发展的指导意见》的文号是？",
+"answer": "A",
+"explain": "357 号（2025）是 VPP 专项指导意见；1261/1283 是负荷管理与需求侧管理办法（2023）。配套记忆：两个 2023 规字号一个是负荷、一个是需求侧。",
+"source": "绿枢建议书 · 政策环境表",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"运营管理规范体系尚未健全",
+"可调能力评估机制存在短板（缺分时段实测认证）",
+"市场化运营机制亟待完善（收益模式缺长效设计）",
+"省内没有现货市场",
+"补贴标准过低"
+],
+"id": "p-036",
+"topic": "浙江VPP",
+"type": "multi",
+"difficulty": 3,
+"stem": "浙江虚拟电厂市场化运营的三大瓶颈是？",
+"answer": "A,B,C",
+"explain": "浙江 2025-08 已全面运行现货（D 错）；瓶颈在规范、评估、长效机制三处——做平台方案时逐条对答。",
+"source": "绿枢建议书 · 浙江三大瓶颈",
+"library": "power",
+"auto": false
+},
+{
+"options": [],
+"id": "p-037",
+"topic": "现货规则",
+"type": "short",
+"difficulty": 2,
+"stem": "说出 2025 年底前电力现货市场的国家目标，以及衔接它的两部已发布国家级规则名称。",
+"answer": "目标：2025 年底前基本实现电力现货市场全覆盖。\n两部规则：①《电力现货市场基本规则（试行）》发改能源规〔2023〕1217 号；\n②《电力中长期交易基本规则》（发改能源规〔2020〕889 号，2020 修订）。",
+"explain": "\"全覆盖目标 + 1217 现货基本规则 + 889 中长期规则\"是国家市场体系的框架锚点。",
+"source": "2023-国家-电力现货市场基本规则",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"(300−220)×1000×1×0.35 = 28",
+"000 元",
+"(300−220)×1×0.35 = 28 元",
+"220×1000×0.35 = 77",
+"000 元",
+"(300−220)×0.35 = 28 万元"
+],
+"id": "p-038",
+"topic": "结算综合",
+"type": "choice",
+"difficulty": 3,
+"stem": "某机组日前申报出力 300MW，日前出清 220MW，调峰电价 λ=0.35 元/kWh，时段 1 小时。按调峰公式 F=(P_pre−P_clear)×Δt×λ，调峰服务费用为？",
+"answer": "A",
+"explain": "注意单位：出力差 80MW 要换成 kW（×1000）才能乘 元/kWh 的 λ。80×1000×1×0.35=2.8 万元。单位换算是这类题最常见的坑。",
+"source": "调峰辅助服务费用计算 · 公式应用",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"600000 × 165 = 99",
+"000",
+"000 元（9900 万元/年）",
+"600 × 165 = 99",
+"000 元",
+"600000 × 165 × 0.9 = 8910 万元",
+"无法计算缺发电小时数"
+],
+"id": "p-039",
+"topic": "容量电价",
+"type": "choice",
+"difficulty": 2,
+"stem": "一台 600MW 煤电机组，铭牌容量 600,000 kW，考核系数 1。按全国统一标准，年容量电费为？",
+"answer": "A",
+"explain": "容量电费=铭牌容量×容量电价×考核系数=60 万 kW×165 元/kW·年=9900 万元/年。考核系数 1 即全额；可用率低于 90% 才扣减。",
+"source": "容量电价补偿计算公式 · 应用",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"中长期：对冲价格波动风险，锁定基础收益",
+"现货：精细化优化，捕捉时段价差",
+"中长期：追求每个时段最高价",
+"现货：完全替代中长期",
+"两者通过一体化策略引擎联动（RL+LLM+博弈论）"
+],
+"id": "p-040",
+"topic": "报价策略",
+"type": "multi",
+"difficulty": 3,
+"stem": "「长协锁风险、现货提收益」的多层级联动体系中，中长期与现货的分工是？",
+"answer": "A,B,E",
+"explain": "核心演进方向：中长期管风险（不是追求高价），现货管收益优化，一体化引擎（可解释、能进化）做动态风险偏好调整。",
+"source": "电力市场报价策略深度研究 · 核心结论",
+"library": "power",
+"auto": false
+},
+{
+"options": [],
+"id": "p-041",
+"topic": "市场数据",
+"type": "short",
+"difficulty": 3,
+"stem": "默写 2025 价格画像四个省份锚点数字（省 + 价格 + 一句话原因）。",
+"answer": "①山东 453.51 元/MWh（2024 发电侧总结算均价）：供需偏紧 + 新能源占比提升；\n②甘肃 187 元/MWh（2025-09 日前）：新能源大省装机过剩；\n③广东 391.86 元/MWh（2025 年度成交）：经济大省负荷稳定，现货电量全国第一（6100 亿）；\n④蒙西 2900 亿千瓦时（2025 预计交易规模）：多边交易 + 跨省外送。",
+"explain": "价格画像=省 + 数字 + 结构原因三件套；原因比数字更重要（结构决定价格水平）。",
+"source": "2025-全国及重点省现货市场价格画像",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"甘肃 V3.2 / 江苏 V2.2 / 山西 V15.0",
+"甘肃 V15.0 / 江苏 V3.2 / 山西 V2.2",
+"甘肃 V2.2 / 江苏 V15.0 / 山西 V3.2",
+"三省都是 V3.2"
+],
+"id": "p-042",
+"topic": "省份规则",
+"type": "choice",
+"difficulty": 3,
+"stem": "下列省份现货规则版本号与省份对应正确的是？",
+"answer": "A",
+"explain": "版本号体现规则迭代速度：山西迭代最快（V15.0，现货老兵），甘肃 V3.2，江苏运营规则 V2.2。",
+"source": "30-各省份政策",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"自备煤电自备机组",
+"分布式电源类",
+"可调负荷类",
+"储能类"
+],
+"id": "p-043",
+"topic": "虚拟电厂",
+"type": "choice",
+"difficulty": 3,
+"stem": "绿枢方案中虚拟电厂的资源类型不包括？",
+"answer": "A",
+"explain": "资源四类：分布式电源 + 可调负荷 + 储能 + 混合型；参与电能量市场与辅助服务市场。\"自备煤电\"不属于 VPP 资源口径。",
+"source": "绿枢建议书 · 项目概况",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"电能量市场 + 辅助服务市场",
+"中长期市场 + 绿证市场",
+"现货市场 + 容量市场",
+"省内市场 + 省间市场"
+],
+"id": "p-044",
+"topic": "电力市场体系",
+"type": "choice",
+"difficulty": 2,
+"stem": "浙江虚拟电厂市场参与的两个市场是？",
+"answer": "A",
+"explain": "电能量市场（含现货价差）+ 辅助服务市场（调峰/调频补偿）是 VPP 两大变现渠道；对应六大收益来源。",
+"source": "绿枢建议书 · 项目概况",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"官方文件 > 市场运营披露 > 行业垂直媒体",
+"行业媒体 > 官方文件 > 运营披露",
+"运营披露 > 行业媒体 > 官方文件",
+"三者等价可任意引用"
+],
+"id": "p-045",
+"topic": "信源方法",
+"type": "choice",
+"difficulty": 2,
+"stem": "电力交易信息溯源的推荐顺序是？",
+"answer": "A",
+"explain": "行业媒体（北极星等）用于追动态，正式引用必须回溯到官方文号或运营披露报告；写方案时媒体数字不能直接当依据。",
+"source": "60-信源与方法论",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"系统边际电价 + 阻塞分量 + 损耗分量",
+"发电成本 + 利润 + 税金",
+"容量电价 + 电量电价 + 辅助服务",
+"日前价 + 实时价 + 偏差价"
+],
+"id": "p-046",
+"topic": "节点电价",
+"type": "choice",
+"difficulty": 2,
+"stem": "节点电价 LMP 的三分解是？",
+"answer": "A",
+"explain": "LMP=系统边际电价+阻塞分量+损耗分量；阻塞区域的局部边际机组报价直接决定节点电价。",
+"source": "电力市场报价策略深度研究 · S4",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"不依赖任何预测",
+"边界条件预测要求高（负荷/新能源/检修）",
+"策略同质化风险削弱有效性",
+"网络约束使出清结果高度非线性"
+],
+"id": "p-047",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 3,
+"stem": "S4\"基于 SCUC/SCED 出清模型的报量报价策略\"的关键局限不包括？",
+"answer": "A",
+"explain": "S4 五步链（预测负荷与新能源→成本曲线→预判 LMP→定报价区间→阻塞区域调整）高度依赖预测；同质化是其最大实战风险。",
+"source": "电力市场报价策略深度研究 · S4 关键局限",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"数据需求大（易过拟合）",
+"多智能体非平稳性",
+"策略可解释性差（合规审计受限）",
+"计算量太小没有挑战",
+"奖励函数太好设计"
+],
+"id": "p-048",
+"topic": "报价策略",
+"type": "multi",
+"difficulty": 3,
+"stem": "S5 强化学习报价的三大核心挑战是？",
+"answer": "A,B,C",
+"explain": "RL 报价在数据、非平稳、可解释三处受限；MADDPG 在多智能体场景表现最优是当前热点。奖励设计要业务专家把关防\"钻空子\"。",
+"source": "电力市场报价策略深度研究 · S5",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"历史数据回测训练 → 模拟环境验证 → 实盘渐进部署",
+"直接实盘探索",
+"只训练不上线",
+"先实盘再回测"
+],
+"id": "p-049",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 2,
+"stem": "RL 报价的训练部署正确路径是？",
+"answer": "A",
+"explain": "三段式：回测→仿真→渐进实盘。离线数据直接学有分布外动作风险，新手期要安全探索或模仿学习兜底。",
+"source": "电力市场报价策略深度研究 · S5 技术路线",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"推演竞争对手行为下的市场均衡价格",
+"预测负荷",
+"计算煤耗",
+"生成结算单"
+],
+"id": "p-050",
+"topic": "报价策略",
+"type": "choice",
+"difficulty": 3,
+"stem": "S6 博弈均衡报价策略（古诺/供给函数均衡）主要用于？",
+"answer": "A",
+"explain": "博弈论把\"对手怎么报\"纳入决策：古诺模型/供给函数均衡推演均衡价；与前两种策略互补而非替代。",
+"source": "电力市场报价策略深度研究 · S6",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"53.5V、设备租赁 150 元/kWh/年、效率 95%、2C2D 策略",
+"10kV、自购设备、效率 100%、1C1D",
+"35kV、租赁 300 元、效率 85%、3C3D",
+"220V、免租、效率 90%、1C1D"
+],
+"id": "p-051",
+"topic": "储能测算",
+"type": "choice",
+"difficulty": 3,
+"stem": "河北南网峰谷套利速查表的关键假设组合是？",
+"answer": "A",
+"explain": "速查表参数：电压 53.5V（<1kV）、租赁 150 元/kWh/年、η=95%、2C2D（分季节两充两放）；分时电价 峰1.00/平0.71/谷0.42 元/kWh。",
+"source": "储能收益Excel计算逻辑拆解",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"11P（3h+8h 叠加）",
+"8P",
+"24P",
+"5P"
+],
+"id": "p-052",
+"topic": "储能测算",
+"type": "choice",
+"difficulty": 3,
+"stem": "按速查表模型：3h 备电 + 8h 储能，负载功率 P 时所需总容量为？",
+"answer": "A",
+"explain": "总容量=(3h 备电 + 8h 储能)×P=11P；其中套利额定容量=8P（8h×P），年衰减 1.0%。",
+"source": "储能收益Excel计算逻辑拆解 · 关键假设",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"交付物要保留公式可追溯，纯数值表无法审计与调参",
+"硬编码更快更好",
+"Excel 不适合测算",
+"100 行太少不够用"
+],
+"id": "p-053",
+"topic": "储能测算",
+"type": "choice",
+"difficulty": 2,
+"stem": "该速查表工作簿\"没有任何 Excel 公式\"，100 行数据是硬编码贴入的。复盘教训是？",
+"answer": "A",
+"explain": "用公式重算验证后 10 列误差为 0、其余 ≤0.16 元（四舍五入）——硬编码表丢了可审计性，团队复用时无法改参数。",
+"source": "储能收益Excel计算逻辑拆解 · 结论先行",
+"library": "power",
+"auto": false
+},
+{
+"options": [],
+"id": "p-054",
+"topic": "基准机组",
+"type": "short",
+"difficulty": 2,
+"stem": "电力市场基准机组信息表（成本表/供需表/火电空间/成本 4 个 Sheet）的用途是什么？",
+"answer": "① 报价模型的基准数据（机组成本曲线）；\n② 现货市场出清模拟的基础（供需格局）；\n③ 火电出力曲线与发电空间测算。",
+"explain": "基准机组表是\"报价沙盘\"的地基：没有它，SCUC/SCED 反推和边际成本曲线都无从谈起。",
+"source": "电力市场基准机组信息",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"不同燃料机组的切换（如煤→气）",
+"电价封顶位置",
+"储能 SOC 拐点",
+"负荷预测误差"
+],
+"id": "p-055",
+"topic": "出清反推",
+"type": "choice",
+"difficulty": 3,
+"stem": "边际机组成本曲线的\"拐点\"通常对应？",
+"answer": "A",
+"explain": "成本曲线拐点=不同燃料机组衔接处；出清价由\"最后一台满足负荷的机组报价\"决定——找到拐点就找到了价格台阶。",
+"source": "电力市场报价策略深度研究 · 图注",
+"library": "power",
+"auto": false
+},
+{
+"options": [
+"前者管\"谁必须压负荷\"（有序用电）",
+"后者管\"用市场化手段激励用户\"（需求响应）",
+"两者是同一文件",
+"前者管发电计划",
+"后者管输电检修"
+],
+"id": "p-056",
+"topic": "国家政策",
+"type": "multi",
+"difficulty": 3,
+"stem": "《电力负荷管理办法（2023 年版）》与《电力需求侧管理办法（2023 年版）》的分工是？",
+"answer": "A,B",
+"explain": "1261 号负荷管理=行政性有序用电（保供底线）；1283 号需求侧=市场化激励（VPP/需求响应的商业基础）。VPP 主走需求侧这条线。",
+"source": "绿枢建议书 · 政策环境表",
+"library": "power",
+"auto": false
+},
+{
+"options": [],
+"id": "p-057",
+"topic": "出清反推",
+"type": "short",
+"difficulty": 3,
+"stem": "写出 S4 出清反推策略的五步逻辑链。",
+"answer": "① 预测系统负荷需求与可再生能源出力；\n② 构建边际机组成本曲线（按报价排序）；\n③ 预判 SCUC/SCED 出清价格（LMP）；\n④ 结合自身发电成本确定最优报价区间；\n⑤ 在阻塞区域关注局部边际机组行为调整报价。",
+"explain": "五步链背下来就能复述给别人听——\"预测→成本曲线→预判 LMP→定区间→阻塞微调\"。",
+"source": "电力市场报价策略深度研究 · S4",
+"library": "power",
+"auto": false
+}
+]
+}
